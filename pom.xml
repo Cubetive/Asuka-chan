@@ -13,10 +13,13 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
-    <dependencies>
+    <dependencies>  
+      <dependency>
         <groupId>net.dv8tion</groupId>
         <artifactId>JDA</artifactId>
-        <version>5.0.0-beta.22</version>
+        <version>5.0.0-alpha.4</version>
+      </dependency>
     </dependencies>
+
 
 </project>

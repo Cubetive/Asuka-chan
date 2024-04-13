@@ -2,23 +2,39 @@ package com.fubukigrin;
 
 import javax.security.auth.login.LoginException;
 
-import net.dv8tion.jda.api.JDABuilder;
+import io.github.cdimascio.dotenv.Dotenv;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 public class AsukaChan {
-    protected static final String token = "MTIyODc5ODYwNTg4NDc4NDczMg.GydoZV.9Df6bwrPLY3AnoaW3bWaacgNHbdB4wT6bgjxrU";
+    private final Dotenv config;
+    private final ShardManager shardManager;
 
-    public static void main(String[] args) throws LoginException {
-        JDABuilder builder = JDABuilder.createDefault(token);
-    
-        // Disable parts of the cache
-        builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
-        // Enable the bulk delete event
-        builder.setBulkDeleteSplittingEnabled(false);
-        // Setting activity
+    public AsukaChan() throws LoginException {
+        config = Dotenv.configure().load();
+        String token = config.get("TOKEN");
+
+        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
+        builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.watching("fubukiGrin"));
-        
-        builder.build();
+        shardManager = builder.build();
+    }
+
+    public static void main(String[] args) {
+        try {
+            AsukaChan asukaChan = new AsukaChan();
+        } catch (LoginException le) {
+            System.out.println("Error: Unable to login! Reason: " + le);
+        }
+    }
+
+    public ShardManager getShardManager() {
+        return shardManager;
+    }
+
+    public Dotenv getConfig() {
+        return config;
     }
 }

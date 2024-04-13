@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class EventListener extends ListenerAdapter{
     @Override
-    public void onReady(ReadyEvent event) {
+    public void onReady(@Nonnull ReadyEvent event) {
         System.out.println("EventListener ready!");
     }
 
@@ -20,8 +20,10 @@ public class EventListener extends ListenerAdapter{
         String content = event.getMessage().getContentDisplay();
         String message = null;
 
+        if (user.isBot()) return; // Ignore all bot messages
+
         // Debug
-        System.out.println(user.getName() + " said '" + content + "'!");
+        System.out.println(user.getName() + " said '" + content + "' in " + event.getChannel().getName());
 
         switch (content.toLowerCase()) {
             case "hello":

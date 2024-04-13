@@ -23,7 +23,7 @@ public class AsukaChan {
         // Initializing the builder
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
         // Enable intents
-        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES);
+        builder.enableIntents(GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES);
         // Setting the bot's status
         builder.setStatus(OnlineStatus.ONLINE);
         // Setting the bot's activity

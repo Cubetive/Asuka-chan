@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class EventListener extends ListenerAdapter{
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
-        System.out.println("EventListener ready!");
+        System.out.println("EventListener --- ready!");
     }
 
     @Override

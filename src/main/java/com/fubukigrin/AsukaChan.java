@@ -2,7 +2,6 @@ package com.fubukigrin;
 
 import javax.security.auth.login.LoginException;
 
-import com.fubukigrin.commands.CommandManager;
 import com.fubukigrin.listeners.EventListener;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -19,7 +18,8 @@ public class AsukaChan {
     public AsukaChan() throws LoginException {
         // Config settings
         config = Dotenv.configure().load();
-        String token = config.get("TOKEN");
+        // String token = config.get("TOKEN");
+        String token = "NzQ1NjQ4MzQ1MDYxNTIzNTY1.GYvET5.w8aFFiD-PXUWaXvF-E0ZVwz-lwZvB31WYtoq-8";
 
         // Initializing the builder
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);

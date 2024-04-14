@@ -1,0 +1,23 @@
+[
+  {
+    "name": "ping",
+    "description": "Ping the bot!",
+    "args:": []
+  },
+  {
+    "name": "boop",
+    "description": "Boop!",
+    "args": []
+  },
+  {
+    "name": "roll",
+    "description": "Roll a random number",
+    "args": [
+      {
+        "type": "INTEGER",
+        "name": "limit",
+        "description": "The highest number of the range, default is 100"
+      }
+    ]
+  }
+]

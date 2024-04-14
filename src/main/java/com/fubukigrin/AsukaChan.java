@@ -2,7 +2,6 @@ package com.fubukigrin;
 
 import javax.security.auth.login.LoginException;
 
-import com.fubukigrin.commands.CommandManager;
 import com.fubukigrin.listeners.EventListener;
 
 import io.github.cdimascio.dotenv.Dotenv;

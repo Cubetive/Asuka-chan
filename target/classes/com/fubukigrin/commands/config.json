@@ -1,0 +1,26 @@
+[
+  {
+    "name": "ping",
+    "category": "generic",
+    "description": "Ping the bot!",
+    "args:": []
+  },
+  {
+    "name": "boop",
+    "category": "generic",
+    "description": "Boop!",
+    "args": []
+  },
+  {
+    "name": "roll",
+    "category": "generic",
+    "description": "Roll a random number",
+    "args": [
+      {
+        "type": "INTEGER",
+        "name": "limit",
+        "description": "The highest number of the range, default is 100"
+      }
+    ]
+  }
+]

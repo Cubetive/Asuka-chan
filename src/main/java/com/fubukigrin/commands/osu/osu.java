@@ -1,4 +1,4 @@
-package com.fubukigrin.listeners.osu;
+package com.fubukigrin.commands.osu;
 
 import javax.annotation.Nonnull;
 import java.net.*;

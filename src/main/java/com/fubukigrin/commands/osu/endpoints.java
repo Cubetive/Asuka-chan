@@ -1,4 +1,4 @@
-package com.fubukigrin.listeners.osu;
+package com.fubukigrin.commands.osu;
 
 public class endpoints {
     public static String Oauth = "https://osu.ppy.sh/oauth/authorize/";

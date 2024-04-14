@@ -40,7 +40,7 @@ public class EventListener extends ListenerAdapter{
         }
 
         if (event.isFromGuild()) {
-            if (message != null) event.getGuild().getDefaultChannel().sendMessage(message).queue();
+            if (message != null) event.getTextChannel().sendMessage(message).queue();
         }
         else if (event.isFromType(ChannelType.PRIVATE))
         {

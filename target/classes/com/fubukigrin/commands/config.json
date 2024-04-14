@@ -1,16 +1,19 @@
 [
   {
     "name": "ping",
+    "category": "generic",
     "description": "Ping the bot!",
     "args:": []
   },
   {
     "name": "boop",
+    "category": "generic",
     "description": "Boop!",
     "args": []
   },
   {
     "name": "roll",
+    "category": "generic",
     "description": "Roll a random number",
     "args": [
       {

@@ -22,6 +22,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class CommandManager extends ListenerAdapter {
+    // Get the category of the command, where <command name, command category>
+    private static Hashtable<String, String> commandCategory = new Hashtable<String, String>();
+
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
         System.out.println("CommandManager --- ready!");
@@ -33,8 +36,15 @@ public class CommandManager extends ListenerAdapter {
     private static URL[] urls;
     private static ClassLoader cl;
 
+    // Path directory (me when different people uses different operating system, real)
+    private static final String WINDOWS_10 = "\\src\\main\\java\\com\\fubukigrin\\commands\\config.json";
+    private static final String MAC_OS_X = "/src/main/java/com/fubukigrin/commands/config.json";
+
     @Override
     public void onGuildReady(@Nonnull GuildReadyEvent event) {
+        // Clear the command category on guild ready
+        commandCategory.clear();
+
         //// fetch java command classes
         file = new File("commands\\");
         try {
@@ -48,7 +58,17 @@ public class CommandManager extends ListenerAdapter {
         //// add slash commands
         String content; // read json file
         try {
-            content = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir")+"\\src\\main\\java\\com\\fubukigrin\\commands\\config.json")));
+            String path = "";
+            switch (System.getProperty("os.name")) {
+                case "Windows 10" -> {
+                    path = WINDOWS_10;
+                }
+                case "Mac OS X" -> {
+                    path = MAC_OS_X;
+                }
+            }
+
+            content = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + path)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -69,69 +89,25 @@ public class CommandManager extends ListenerAdapter {
             }
 
             commandData.add(sc);
+            commandCategory.put(cmd.getString("name"), cmd.getString("category"));
         }
 
         //--- Update commands ---\\
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         // Get name of the command
         String command = event.getName();
 
         try {
-            Class c = cl.loadClass("com.fubukigrin.commands." + command);
+            Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(command) + "." + command);
             Method m = c.getMethod("execute", new Class[] {SlashCommandInteractionEvent.class});
             m.invoke(null, event);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 }
-
-/*
-// testing code
-public static void main(String[] args) {
-    try {
-        String content = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir")+"\\src\\main\\java\\com\\fubukigrin\\commands\\config.json")));
-        JSONArray cmds = new JSONArray(content);
-        for (int i = 0; i < cmds.length(); i++) {
-            JSONObject cmd = cmds.getJSONObject(i);
-            System.out.println(cmd.getString("name"));
-            System.out.println(cmd);
-        }
-    } catch (IOException e) {
-        throw new RuntimeException(e);
-    }
-
-    File file = new File("commands\\");
-    try {
-        URL url = file.toURI().toURL();
-        URL[] urls = new URL[]{url};
-
-        ClassLoader cl = new URLClassLoader(urls);
-
-        Class c = cl.loadClass("com.fubukigrin.commands.ping");
-        Method m = c.getMethod("execute", new Class[] {SlashCommandInteractionEvent.class});
-        m.invoke(null);
-    } catch (MalformedURLException e) {
-        throw new RuntimeException(e);
-    } catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-    } catch (NoSuchMethodException e) {
-        System.out.println("???");
-        // throw new RuntimeException(e);
-    } catch (InvocationTargetException e) {
-        throw new RuntimeException(e);
-    } catch (IllegalAccessException e) {
-        throw new RuntimeException(e);
-    }
-}
- */

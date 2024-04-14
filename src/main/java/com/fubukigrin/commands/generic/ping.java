@@ -1,7 +1,6 @@
-package com.fubukigrin.commands;
+package com.fubukigrin.commands.generic;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 

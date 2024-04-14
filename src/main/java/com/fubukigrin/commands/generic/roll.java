@@ -1,4 +1,4 @@
-package com.fubukigrin.commands;
+package com.fubukigrin.commands.generic;
 
 import javax.annotation.Nonnull;
 import java.util.Random;

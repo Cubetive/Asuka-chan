@@ -8,8 +8,10 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 public class CommandManager extends ListenerAdapter {
     @Override
@@ -27,6 +29,12 @@ public class CommandManager extends ListenerAdapter {
             case "ping" -> {
                 GeneralCommands.ping(event);
             }
+            case "boop" -> {
+                GeneralCommands.boop(event);
+            }
+            case "roll" -> {
+                GeneralCommands.roll(event);
+            }
         }
     }
 
@@ -34,10 +42,13 @@ public class CommandManager extends ListenerAdapter {
     public void onGuildReady(@Nonnull GuildReadyEvent event) {
         List<CommandData> commandData = new ArrayList<>();
         
-        // General commands
+        //--- General commands ---\\
         commandData.add(Commands.slash("ping", "Ping the bot!"));
+        commandData.add(Commands.slash("boop", "Boop!"));
+        commandData.add(Commands.slash("roll", "Roll a random number")
+                    .addOption(OptionType.INTEGER, "limit", "The highest number of the range, default is 100"));
 
-        // Update commands
+        //--- Update commands ---\\
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
 }

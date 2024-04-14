@@ -2,6 +2,7 @@ package com.fubukigrin;
 
 import javax.security.auth.login.LoginException;
 
+import com.fubukigrin.commands.CommandManager;
 import com.fubukigrin.listeners.EventListener;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -32,9 +33,10 @@ public class AsukaChan {
         shardManager = builder.build();
 
         // Register listeners
-        shardManager.addEventListener(new EventListener());
+        shardManager.addEventListener(new EventListener(),
+                                      new CommandManager());
     }
-
+    
     public static void main(String[] args) {
         try {
             AsukaChan asukaChan = new AsukaChan();

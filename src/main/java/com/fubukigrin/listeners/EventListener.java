@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class EventListener extends ListenerAdapter{
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
-        System.out.println("EventListener ready!");
+        System.out.println("EventListener --- ready!");
     }
 
     @Override
@@ -40,7 +40,7 @@ public class EventListener extends ListenerAdapter{
         }
 
         if (event.isFromGuild()) {
-            if (message != null) event.getGuild().getDefaultChannel().sendMessage(message).queue();
+            if (message != null) event.getTextChannel().sendMessage(message).queue();
         }
         else if (event.isFromType(ChannelType.PRIVATE))
         {

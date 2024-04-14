@@ -12,8 +12,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
-@SuppressWarnings("unused")
-
 public class AsukaChan {
     private final Dotenv config;
     private final ShardManager shardManager;
@@ -38,7 +36,7 @@ public class AsukaChan {
         shardManager.addEventListener(new EventListener(),
                                       new CommandManager());
     }
-    
+
     public static void main(String[] args) {
         try {
             AsukaChan asukaChan = new AsukaChan();

@@ -39,9 +39,14 @@ public class AsukaChan {
     public static void main(String[] args) {
         try {
             AsukaChan asukaChan = new AsukaChan();
+            asukaChan.onReady();
         } catch (LoginException le) {
             System.out.println("Error: Unable to login! Reason: " + le);
         }
+    }
+
+    public void onReady() {
+        System.out.println("System: Bot is online!");
     }
 
     public ShardManager getShardManager() {

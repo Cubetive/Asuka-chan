@@ -66,9 +66,11 @@ public class Endpoints {
             Desktop desktop = Desktop.getDesktop();
 
             desktop.browse(oauth);
+
+            String port = redirectURI.split(":")[1];
             String pythonWebServer = "from socket import socket, AF_INET, SOCK_STREAM\n"+
                 "serversocket = socket(AF_INET, SOCK_STREAM)\n"+
-                "serversocket.bind(('localhost', 3727))\n"+
+                String.format("serversocket.bind(('localhost', %s))\n", port)+
                 "serversocket.listen(1)\n"+
                 "connection, _ = serversocket.accept()\n"+
                 "data = str(connection.recv(8192))\n"+

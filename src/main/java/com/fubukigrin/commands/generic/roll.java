@@ -1,21 +1,12 @@
-package com.fubukigrin.commands;
+package com.fubukigrin.commands.generic;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
-public class GeneralCommands {
-    public static void ping(@Nonnull SlashCommandInteractionEvent event) {
-        event.reply("Pong!").queue();
-    }
-
-    public static void boop(@Nonnull SlashCommandInteractionEvent event) {
-        event.reply("Boop!").queue();
-    }
-
-    @SuppressWarnings("null")
-    public static void roll(@Nonnull SlashCommandInteractionEvent event) {
+public class roll {
+    public static void execute(@Nonnull SlashCommandInteractionEvent event) {
         String message = "";
         int limit = (event.getOption("limit") != null) ? event.getOption("limit").getAsInt() : 100;
 
@@ -24,7 +15,7 @@ public class GeneralCommands {
 
         // Pseudo random number generator
         Random random = new Random();
-        int number = random.nextInt(limit) + 1; 
+        int number = random.nextInt(limit) + 1;
 
         message += event.getUser().getName() + " rolled **" + String.valueOf(number) + "**";
 

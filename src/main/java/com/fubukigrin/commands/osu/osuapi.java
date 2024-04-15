@@ -18,7 +18,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 @SuppressWarnings("unused")
 
-public class osu extends ListenerAdapter {
+public class osuapi extends ListenerAdapter {
     private static String BaseUrl = "https://osu.ppy.sh/api/v2/";
     private static String beatmap = "beatmaps/";
     private static String users = "users/";
@@ -27,7 +27,7 @@ public class osu extends ListenerAdapter {
 
     Endpoints api;
 
-    public osu() throws Exception {
+    public osuapi() throws Exception {
         api = new Endpoints();
         objectMapper = new ObjectMapper();
     }

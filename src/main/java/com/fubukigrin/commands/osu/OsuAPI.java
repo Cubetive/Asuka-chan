@@ -10,15 +10,9 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import org.apache.commons.lang3.math.*;
 
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
 @SuppressWarnings("unused")
 
-public class OsuAPI extends ListenerAdapter {
+public class OsuAPI {
     private static String BaseUrl = "https://osu.ppy.sh/api/v2/";
     private static String beatmap = "beatmaps/";
     private static String users = "users/";

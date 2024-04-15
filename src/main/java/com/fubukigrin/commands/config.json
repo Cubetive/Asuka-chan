@@ -1,18 +1,21 @@
 [
   {
-    "name": "ping",
+    "name_id": "ping",
+    "command_class": "Ping",
     "category": "generic",
     "description": "Ping the bot!",
     "args:": []
   },
   {
-    "name": "boop",
+    "name_id": "boop",
+    "command_class": "Boop",
     "category": "generic",
     "description": "Boop!",
     "args": []
   },
   {
-    "name": "roll",
+    "name_id": "roll",
+    "command_class": "Roll",
     "category": "generic",
     "description": "Roll a random number",
     "args": [

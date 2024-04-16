@@ -18,7 +18,8 @@ public class AsukaChan {
     public AsukaChan() throws LoginException {
         // Config settings
         config = Dotenv.configure().load();
-        String token = config.get("TOKEN");
+        // String token = config.get("TOKEN");
+        String token = "NzQ1NjQ4MzQ1MDYxNTIzNTY1.GLzMgn.xVa-mQQe012tURxJMRkOFOJpSkTh0RK3LqXPvU";
 
         // Initializing the builder
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);

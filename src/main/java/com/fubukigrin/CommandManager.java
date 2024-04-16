@@ -10,6 +10,10 @@ import java.net.*;
 
 import javax.annotation.Nonnull;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -38,9 +42,35 @@ public class CommandManager extends ListenerAdapter {
     private static URL[] urls;
     private static ClassLoader cl;
 
-    // Path directory (me when different people uses different operating system, real)
-    private static final String WINDOWS_10 = "\\src\\main\\java\\com\\fubukigrin\\commands\\config.json";
-    private static final String MAC_OS_X = "/src/main/java/com/fubukigrin/commands/config.json";
+//    public static void main(String[] args) throws JsonProcessingException {
+//        //// fetch java command classes
+//        file = new File("commands\\");
+//        try {
+//            url = file.toURI().toURL();
+//            urls = new URL[]{url};
+//            cl = new URLClassLoader(urls);
+//        } catch (MalformedURLException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        //// add slash commands
+//        String content; // read json file
+//        try {
+//            content = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "/src/main/java/com/fubukigrin/commands/config.json")));
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        List<JsonNode> cmds = objectMapper.readValue(content, new TypeReference<List<JsonNode>>() {});
+//        for (JsonNode node: cmds) {
+//            System.out.println(node.get("name_id").asText());
+//            JsonNode ar = node.get("args");
+//            for (JsonNode arg: ar) {
+//                System.out.println(arg.get("type").asText());
+//            }
+//        }
+//    }
 
     @Override
     public void onGuildReady(@Nonnull GuildReadyEvent event) {
@@ -60,40 +90,47 @@ public class CommandManager extends ListenerAdapter {
         //// add slash commands
         String content; // read json file
         try {
-            String path = "";
-            switch (System.getProperty("os.name")) {
-                case "Windows 10" -> {
-                    path = WINDOWS_10;
-                }
-                case "Mac OS X" -> {
-                    path = MAC_OS_X;
-                }
-            }
-
-            content = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + path)));
+            content = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "/src/main/java/com/fubukigrin/commands/config.json")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         List<CommandData> commandData = new ArrayList<>();
         // extract json to read command details
-        JSONArray cmds = new JSONArray(content);
-        for (int i = 0; i < cmds.length(); i++) {
-            JSONObject cmd = cmds.getJSONObject(i);
-            SlashCommandData sc = Commands.slash(cmd.getString("name_id"), cmd.getString("description"));
-
-            if (cmd.has("args")) {
-                JSONArray args = cmd.getJSONArray("args");
-                for (int j = 0; j < args.length(); j++) {
-                    JSONObject arg = args.getJSONObject(j);
-                    sc.addOption(OptionType.valueOf(arg.getString("type")), arg.getString("name"), arg.getString("description"));
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<JsonNode> cmds = objectMapper.readValue(content, new TypeReference<List<JsonNode>>() {});
+            for (JsonNode cmd: cmds) {
+                SlashCommandData sc = Commands.slash(cmd.get("name_id").asText(), cmd.get("description").asText());
+                JsonNode ar = cmd.get("args");
+                for (JsonNode arg: ar) {
+                    sc.addOption(OptionType.valueOf(arg.get("type").asText()), arg.get("name").asText(), arg.get("description").asText());
                 }
+                commandData.add(sc);
+                commandClass.put(cmd.get("name_id").asText(), cmd.get("command_class").asText());
+                commandCategory.put(cmd.get("name_id").asText(), cmd.get("category").asText());
             }
-
-            commandData.add(sc);
-            commandClass.put(cmd.getString("name_id"), cmd.getString("command_class"));
-            commandCategory.put(cmd.getString("name_id"), cmd.getString("category"));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
+
+//        JSONArray cmds = new JSONArray(content);
+//        for (int i = 0; i < cmds.length(); i++) {
+//            JSONObject cmd = cmds.getJSONObject(i);
+//            SlashCommandData sc = Commands.slash(cmd.getString("name_id"), cmd.getString("description"));
+//
+//            if (cmd.has("args")) {
+//                JSONArray args = cmd.getJSONArray("args");
+//                for (int j = 0; j < args.length(); j++) {
+//                    JSONObject arg = args.getJSONObject(j);
+//                    sc.addOption(OptionType.valueOf(arg.getString("type")), arg.getString("name"), arg.getString("description"));
+//                }
+//            }
+//
+//            commandData.add(sc);
+//            commandClass.put(cmd.getString("name_id"), cmd.getString("command_class"));
+//            commandCategory.put(cmd.getString("name_id"), cmd.getString("category"));
+//        }
 
         //--- Update commands ---\\
         event.getGuild().updateCommands().addCommands(commandData).queue();

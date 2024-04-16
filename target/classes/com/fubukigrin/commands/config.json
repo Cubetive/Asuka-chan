@@ -1,0 +1,29 @@
+[
+  {
+    "name_id": "ping",
+    "command_class": "Ping",
+    "category": "generic",
+    "description": "Ping the bot!",
+    "args": []
+  },
+  {
+    "name_id": "boop",
+    "command_class": "Boop",
+    "category": "generic",
+    "description": "Boop!",
+    "args": []
+  },
+  {
+    "name_id": "roll",
+    "command_class": "Roll",
+    "category": "generic",
+    "description": "Roll a random number",
+    "args": [
+      {
+        "type": "INTEGER",
+        "name": "limit",
+        "description": "The highest number of the range, default is 100"
+      }
+    ]
+  }
+]

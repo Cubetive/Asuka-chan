@@ -34,6 +34,7 @@ public class CommandManager extends ListenerAdapter {
         System.out.println("CommandManager --- ready!");
     }
 
+
     // variables for command calling
     private static File file;
     private static URL url;

@@ -42,36 +42,6 @@ public class CommandManager extends ListenerAdapter {
     private static URL[] urls;
     private static ClassLoader cl;
 
-//    public static void main(String[] args) throws JsonProcessingException {
-//        //// fetch java command classes
-//        file = new File("commands\\");
-//        try {
-//            url = file.toURI().toURL();
-//            urls = new URL[]{url};
-//            cl = new URLClassLoader(urls);
-//        } catch (MalformedURLException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        //// add slash commands
-//        String content; // read json file
-//        try {
-//            content = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "/src/main/java/com/fubukigrin/commands/config.json")));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        List<JsonNode> cmds = objectMapper.readValue(content, new TypeReference<List<JsonNode>>() {});
-//        for (JsonNode node: cmds) {
-//            System.out.println(node.get("name_id").asText());
-//            JsonNode ar = node.get("args");
-//            for (JsonNode arg: ar) {
-//                System.out.println(arg.get("type").asText());
-//            }
-//        }
-//    }
-
     @Override
     public void onGuildReady(@Nonnull GuildReadyEvent event) {
         // Clear the command category on guild ready
@@ -113,24 +83,6 @@ public class CommandManager extends ListenerAdapter {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
-//        JSONArray cmds = new JSONArray(content);
-//        for (int i = 0; i < cmds.length(); i++) {
-//            JSONObject cmd = cmds.getJSONObject(i);
-//            SlashCommandData sc = Commands.slash(cmd.getString("name_id"), cmd.getString("description"));
-//
-//            if (cmd.has("args")) {
-//                JSONArray args = cmd.getJSONArray("args");
-//                for (int j = 0; j < args.length(); j++) {
-//                    JSONObject arg = args.getJSONObject(j);
-//                    sc.addOption(OptionType.valueOf(arg.getString("type")), arg.getString("name"), arg.getString("description"));
-//                }
-//            }
-//
-//            commandData.add(sc);
-//            commandClass.put(cmd.getString("name_id"), cmd.getString("command_class"));
-//            commandCategory.put(cmd.getString("name_id"), cmd.getString("category"));
-//        }
 
         //--- Update commands ---\\
         event.getGuild().updateCommands().addCommands(commandData).queue();

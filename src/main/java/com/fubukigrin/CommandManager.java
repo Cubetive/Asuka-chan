@@ -22,7 +22,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class CommandManager extends ListenerAdapter {
-    // Get the category of the command, where <command name, command category>
+    // Get the Class of the command, where <name_id, command_class>
+    private static Hashtable<String, String> commandClass = new Hashtable<String, String>();
+    // Get the category of the command, where <name_id, category>
     private static Hashtable<String, String> commandCategory = new Hashtable<String, String>();
 
     @Override
@@ -78,7 +80,7 @@ public class CommandManager extends ListenerAdapter {
         JSONArray cmds = new JSONArray(content);
         for (int i = 0; i < cmds.length(); i++) {
             JSONObject cmd = cmds.getJSONObject(i);
-            SlashCommandData sc = Commands.slash(cmd.getString("name"), cmd.getString("description"));
+            SlashCommandData sc = Commands.slash(cmd.getString("name_id"), cmd.getString("description"));
 
             if (cmd.has("args")) {
                 JSONArray args = cmd.getJSONArray("args");
@@ -89,7 +91,8 @@ public class CommandManager extends ListenerAdapter {
             }
 
             commandData.add(sc);
-            commandCategory.put(cmd.getString("name"), cmd.getString("category"));
+            commandClass.put(cmd.getString("name_id"), cmd.getString("command_class"));
+            commandCategory.put(cmd.getString("name_id"), cmd.getString("category"));
         }
 
         //--- Update commands ---\\
@@ -99,11 +102,11 @@ public class CommandManager extends ListenerAdapter {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
-        // Get name of the command
+        // Get name id of the command
         String command = event.getName();
 
         try {
-            Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(command) + "." + command);
+            Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(command) + "." + commandClass.get(command));
             Method m = c.getMethod("execute", new Class[] {SlashCommandInteractionEvent.class});
             m.invoke(null, event);
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {

@@ -12,7 +12,7 @@ import org.apache.commons.lang3.math.*;
 
 @SuppressWarnings("unused")
 
-public class osu {
+public class OsuAPI {
     private static String BaseUrl = "https://osu.ppy.sh/api/v2/";
     private static String beatmap = "beatmaps/";
     private static String users = "users/";
@@ -21,7 +21,7 @@ public class osu {
 
     Endpoints api;
 
-    public osu() throws Exception {
+    public OsuAPI() throws Exception {
         api = new Endpoints();
         objectMapper = new ObjectMapper();
     }

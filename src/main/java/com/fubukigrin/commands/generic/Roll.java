@@ -5,7 +5,8 @@ import java.util.Random;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
-public class roll {
+public class Roll {
+    @SuppressWarnings("null")
     public static void execute(@Nonnull SlashCommandInteractionEvent event) {
         String message = "";
         int limit = (event.getOption("limit") != null) ? event.getOption("limit").getAsInt() : 100;

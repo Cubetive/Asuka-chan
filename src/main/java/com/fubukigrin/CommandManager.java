@@ -33,8 +33,7 @@ public class CommandManager extends ListenerAdapter {
     public void onReady(@Nonnull ReadyEvent event) {
         System.out.println("CommandManager --- ready!");
     }
-
-
+    
     // variables for command calling
     private static File file;
     private static URL url;

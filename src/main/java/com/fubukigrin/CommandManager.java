@@ -112,7 +112,7 @@ public class CommandManager extends ListenerAdapter {
         Dotenv config = dotenvConfig.getConfig();
         // Check if the command structure is valid
         String prefix = config.get("PREFIX");
-        String[] message = event.getMessage().getContentRaw().split(" ");
+        String[] message = event.getMessage().getContentRaw().split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
         // If message does not contain prefix or the author isn't the user, immediately returns
         if (!message[0].startsWith(prefix) || event.getAuthor().isBot() || event.getAuthor().isSystem()) return;
 

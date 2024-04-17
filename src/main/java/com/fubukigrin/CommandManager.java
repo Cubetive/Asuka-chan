@@ -117,8 +117,8 @@ public class CommandManager extends ListenerAdapter {
         if (!message[0].startsWith(prefix) || event.getAuthor().isBot() || event.getAuthor().isSystem()) return;
 
         // Get name of the command and its arguments
-        String command = message[0].substring(1);
-        String[] args = (message.length >= 2) ? Arrays.copyOfRange(message, 1, message.length - 1) : null;
+        String command = message[0].substring(prefix.length());
+        String[] args = (message.length >= 2) ? Arrays.copyOfRange(message, 1, message.length) : null;
 
         try {
             Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(command) + "." + commandClass.get(command));

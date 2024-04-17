@@ -14,9 +14,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -96,6 +99,31 @@ public class CommandManager extends ListenerAdapter {
             Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(command) + "." + commandClass.get(command));
             Method m = c.getMethod("execute", new Class[] {SlashCommandInteractionEvent.class});
             m.invoke(null, event);
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Prefix command listener
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+        DotenvConfig dotenvConfig = new DotenvConfig();
+        Dotenv config = dotenvConfig.getConfig();
+        // Check if the command structure is valid
+        String prefix = config.get("PREFIX");
+        String[] message = event.getMessage().getContentRaw().split(" ");
+        // If message does not contain prefix or the author isn't the user, immediately returns
+        if (!message[0].startsWith(prefix) || event.getAuthor().isBot() || event.getAuthor().isSystem()) return;
+
+        // Get name of the command and its arguments
+        String command = message[0].substring(1);
+        String[] args = (message.length >= 2) ? Arrays.copyOfRange(message, 1, message.length - 1) : null;
+
+        try {
+            Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(command) + "." + commandClass.get(command));
+            Method m = c.getMethod("execute", new Class[] {MessageReceivedEvent.class, String[].class});
+            m.invoke(null, event, args);
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

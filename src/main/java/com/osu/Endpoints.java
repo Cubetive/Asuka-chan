@@ -1,4 +1,4 @@
-package com.fubukigrin.commands.osu;
+package com.osu;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper; 
@@ -44,7 +44,6 @@ public class Endpoints {
             requestData();
         }
         else {
-            
             JsonNode node = objectMapper.readTree(file);
 
             accessToken = node.get("access_token").asText();

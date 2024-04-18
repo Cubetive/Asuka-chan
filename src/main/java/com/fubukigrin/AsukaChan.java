@@ -1,5 +1,7 @@
 package com.fubukigrin;
 
+import java.util.*;
+
 import javax.security.auth.login.LoginException;
 
 import com.fubukigrin.listeners.EventListener;
@@ -10,6 +12,8 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
+
+@SuppressWarnings("unused")
 
 public class AsukaChan {
     private final ShardManager shardManager;

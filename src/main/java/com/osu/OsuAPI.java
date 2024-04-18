@@ -1,14 +1,16 @@
-package com.fubukigrin.commands.osu;
+package com.osu;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
 import java.net.http.*;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
+
 import org.apache.commons.lang3.math.*;
+import org.python.indexer.Scope;
 
 @SuppressWarnings("unused")
 
@@ -26,7 +28,7 @@ public class OsuAPI {
         objectMapper = new ObjectMapper();
     }
 
-    public JsonNode getUserData(String user) throws Exception {
+    public UserData getUserData(String user) throws Exception {
         String key;
         if (NumberUtils.isNumber(user)) { key = "id"; }
         else { key = "username"; }
@@ -34,32 +36,51 @@ public class OsuAPI {
         String temp = BaseUrl + users + user + "/osu?key=" + key;
         URI uri = new URI(temp.replace(" ", "%20"));
 
-        return sendGetRequest(uri);
+        UserData userData = new UserData();
+        userData.set(sendGetRequest(uri));
+
+        return userData;
     }
 
-    public JsonNode getBeatmap(int id) throws Exception {
-        URI uri = new URI(BaseUrl + beatmap + String.format("lookup?id=%s", id));
+    public Beatmap getBeatmap(int id) throws Exception {
+        URI uri = new URI(BaseUrl + beatmap + String.format("%s", id));
 
-        return sendGetRequest(uri);
+        Beatmap beatmap = new Beatmap();
+        beatmap.set(sendGetRequest(uri));
+
+        return beatmap;
     }
 
-    public JsonNode getLeaderboard(int id) throws Exception {
+    public Leaderboard getLeaderboard(int id) throws Exception {
         URI uri = new URI(BaseUrl + beatmap + String.format("%s/scores?legacy_only=1", id));
 
-        return sendGetRequest(uri);
+        Leaderboard leaderboard = new Leaderboard(sendGetRequest(uri));
+
+        return leaderboard;
     }
 
-    public JsonNode getLeaderboard(int id, String type) throws Exception {
+    public Leaderboard getLeaderboard(int id, String type) throws Exception {
         // type should only be country, others won't work
         URI uri = new URI(BaseUrl + beatmap + String.format("%s/scores?legacy_only=1&type=%s", id, type));
 
-        return sendGetRequest(uri);
+        Leaderboard leaderboard = new Leaderboard(sendGetRequest(uri));
+
+        return leaderboard;
     }
 
-    public JsonNode getUserScores(int id, int uid) throws Exception {
+    public List<Score> getUserScores(int id, int uid) throws Exception {
         URI uri = new URI(BaseUrl + beatmap + String.format("%s/scores/users/%s/all?legacy_only=1", id, uid));
 
-        return sendGetRequest(uri);
+        List<Score> scores = new ArrayList<>();
+        Score score = new Score();
+
+        JsonNode jsonNode = sendGetRequest(uri);
+        for (JsonNode node: jsonNode.get("scores")) {
+            score.set(node);
+            scores.add(score);
+        }
+
+        return scores;
     }
 
     public JsonNode sendGetRequest(URI uri) throws Exception {

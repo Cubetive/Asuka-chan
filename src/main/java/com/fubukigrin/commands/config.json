@@ -4,7 +4,7 @@
     "command_class": "Ping",
     "category": "generic",
     "description": "Ping the bot!",
-    "args:": []
+    "args": []
   },
   {
     "name_id": "boop",

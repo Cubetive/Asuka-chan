@@ -1,9 +1,11 @@
 package com.fubukigrin.commands.generic;
 
 import javax.annotation.Nonnull;
+
 import java.util.Random;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Roll {
     @SuppressWarnings("null")
@@ -11,15 +13,36 @@ public class Roll {
         String message = "";
         int limit = (event.getOption("limit") != null) ? event.getOption("limit").getAsInt() : 100;
 
+        int number = rollNum(limit);
+        message += event.getUser().getAsMention() + " rolled **" + String.valueOf(number) + "**";
+
+        event.reply(message).queue();
+    }
+
+    public static void execute(@Nonnull MessageReceivedEvent event, String[] args) {
+        String message = "";
+        int limit;
+
+        try {
+            limit = (args.length > 1) ? Integer.parseInt(args[0]) : 100;
+        }
+        catch (Exception e) {
+            // Ignore if user doesn't input an actual limit
+            limit = 100;
+        }
+
+        int number = rollNum(limit);
+        message += event.getAuthor().getAsMention() + " rolled **" + String.valueOf(number) + "**";
+
+        event.getChannel().sendMessage(message).queue();
+    }
+
+    private static int rollNum(int limit) {
         // Check if number is less than 2, which defaults it back to 100 if it's the case
         if (limit < 2) limit = 100;
 
         // Pseudo random number generator
         Random random = new Random();
-        int number = random.nextInt(limit) + 1;
-
-        message += event.getUser().getName() + " rolled **" + String.valueOf(number) + "**";
-
-        event.reply(message).queue();
+        return random.nextInt(limit) + 1;
     }
 }

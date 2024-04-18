@@ -44,7 +44,6 @@ public class Endpoints {
             requestData();
         }
         else {
-            
             JsonNode node = objectMapper.readTree(file);
 
             accessToken = node.get("access_token").asText();

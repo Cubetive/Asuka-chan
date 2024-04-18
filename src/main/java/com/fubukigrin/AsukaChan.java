@@ -1,8 +1,13 @@
 package com.fubukigrin;
 
+import java.util.*;
+
 import javax.security.auth.login.LoginException;
 
 import com.fubukigrin.listeners.EventListener;
+
+import com.fubukigrin.commands.osu.OsuAPI;
+import com.fubukigrin.commands.osu.Types.*;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -10,6 +15,8 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
+
+@SuppressWarnings("unused")
 
 public class AsukaChan {
     private final Dotenv config;

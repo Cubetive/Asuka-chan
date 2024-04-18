@@ -19,12 +19,12 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 @SuppressWarnings("unused")
 
 public class AsukaChan {
-    private final Dotenv config;
     private final ShardManager shardManager;
 
     public AsukaChan() throws LoginException {
         // Config settings
-        config = Dotenv.configure().load();
+        DotenvConfig dotenvConfig = new DotenvConfig();
+        Dotenv config = dotenvConfig.getConfig();
         String token = config.get("TOKEN");
 
         // Initializing the builder
@@ -58,9 +58,5 @@ public class AsukaChan {
 
     public ShardManager getShardManager() {
         return shardManager;
-    }
-
-    public Dotenv getConfig() {
-        return config;
     }
 }

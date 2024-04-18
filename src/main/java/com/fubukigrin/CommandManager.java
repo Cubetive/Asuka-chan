@@ -10,16 +10,21 @@ import java.net.*;
 
 import javax.annotation.Nonnull;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class CommandManager extends ListenerAdapter {
     // Get the Class of the command, where <name_id, command_class>
@@ -37,10 +42,6 @@ public class CommandManager extends ListenerAdapter {
     private static URL url;
     private static URL[] urls;
     private static ClassLoader cl;
-
-    // Path directory (me when different people uses different operating system, real)
-    private static final String WINDOWS_10 = "\\src\\main\\java\\com\\fubukigrin\\commands\\config.json";
-    private static final String MAC_OS_X = "/src/main/java/com/fubukigrin/commands/config.json";
 
     @Override
     public void onGuildReady(@Nonnull GuildReadyEvent event) {
@@ -60,39 +61,28 @@ public class CommandManager extends ListenerAdapter {
         //// add slash commands
         String content; // read json file
         try {
-            String path = "";
-            switch (System.getProperty("os.name")) {
-                case "Windows 10" -> {
-                    path = WINDOWS_10;
-                }
-                case "Mac OS X" -> {
-                    path = MAC_OS_X;
-                }
-            }
-
-            content = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + path)));
+            content = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "/src/main/java/com/fubukigrin/commands/config.json")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         List<CommandData> commandData = new ArrayList<>();
         // extract json to read command details
-        JSONArray cmds = new JSONArray(content);
-        for (int i = 0; i < cmds.length(); i++) {
-            JSONObject cmd = cmds.getJSONObject(i);
-            SlashCommandData sc = Commands.slash(cmd.getString("name_id"), cmd.getString("description"));
-
-            if (cmd.has("args")) {
-                JSONArray args = cmd.getJSONArray("args");
-                for (int j = 0; j < args.length(); j++) {
-                    JSONObject arg = args.getJSONObject(j);
-                    sc.addOption(OptionType.valueOf(arg.getString("type")), arg.getString("name"), arg.getString("description"));
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<JsonNode> cmds = objectMapper.readValue(content, new TypeReference<List<JsonNode>>() {});
+            for (JsonNode cmd: cmds) {
+                SlashCommandData sc = Commands.slash(cmd.get("name_id").asText(), cmd.get("description").asText());
+                JsonNode ar = cmd.get("args");
+                for (JsonNode arg: ar) {
+                    sc.addOption(OptionType.valueOf(arg.get("type").asText()), arg.get("name").asText(), arg.get("description").asText());
                 }
+                commandData.add(sc);
+                commandClass.put(cmd.get("name_id").asText(), cmd.get("command_class").asText());
+                commandCategory.put(cmd.get("name_id").asText(), cmd.get("category").asText());
             }
-
-            commandData.add(sc);
-            commandClass.put(cmd.getString("name_id"), cmd.getString("command_class"));
-            commandCategory.put(cmd.getString("name_id"), cmd.getString("category"));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
 
         //--- Update commands ---\\
@@ -109,6 +99,31 @@ public class CommandManager extends ListenerAdapter {
             Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(command) + "." + commandClass.get(command));
             Method m = c.getMethod("execute", new Class[] {SlashCommandInteractionEvent.class});
             m.invoke(null, event);
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Prefix command listener
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+        DotenvConfig dotenvConfig = new DotenvConfig();
+        Dotenv config = dotenvConfig.getConfig();
+        // Check if the command structure is valid
+        String prefix = config.get("PREFIX");
+        String[] message = event.getMessage().getContentRaw().split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        // If message does not contain prefix or the author isn't the user, immediately returns
+        if (!message[0].startsWith(prefix) || event.getAuthor().isBot() || event.getAuthor().isSystem()) return;
+
+        // Get name of the command and its arguments
+        String command = message[0].substring(prefix.length());
+        String[] args = (message.length >= 2) ? Arrays.copyOfRange(message, 1, message.length) : null;
+
+        try {
+            Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(command) + "." + commandClass.get(command));
+            Method m = c.getMethod("execute", new Class[] {MessageReceivedEvent.class, String[].class});
+            m.invoke(null, event, args);
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

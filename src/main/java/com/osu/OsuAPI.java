@@ -1,6 +1,4 @@
-package com.fubukigrin.commands.osu;
-
-import com.fubukigrin.commands.osu.Types.*;
+package com.osu;
 
 import com.fasterxml.jackson.databind.*;
 
@@ -56,8 +54,7 @@ public class OsuAPI {
     public Leaderboard getLeaderboard(int id) throws Exception {
         URI uri = new URI(BaseUrl + beatmap + String.format("%s/scores?legacy_only=1", id));
 
-        Leaderboard leaderboard = new Leaderboard();
-        leaderboard.set(sendGetRequest(uri));
+        Leaderboard leaderboard = new Leaderboard(sendGetRequest(uri));
 
         return leaderboard;
     }
@@ -66,8 +63,7 @@ public class OsuAPI {
         // type should only be country, others won't work
         URI uri = new URI(BaseUrl + beatmap + String.format("%s/scores?legacy_only=1&type=%s", id, type));
 
-        Leaderboard leaderboard = new Leaderboard();
-        leaderboard.set(sendGetRequest(uri));
+        Leaderboard leaderboard = new Leaderboard(sendGetRequest(uri));
 
         return leaderboard;
     }

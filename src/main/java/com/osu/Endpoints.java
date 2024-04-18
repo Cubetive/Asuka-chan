@@ -1,4 +1,4 @@
-package com.fubukigrin.commands.osu;
+package com.osu;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper; 

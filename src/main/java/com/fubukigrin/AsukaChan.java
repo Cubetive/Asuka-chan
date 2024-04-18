@@ -6,9 +6,6 @@ import javax.security.auth.login.LoginException;
 
 import com.fubukigrin.listeners.EventListener;
 
-import com.fubukigrin.commands.osu.OsuAPI;
-import com.fubukigrin.commands.osu.Types.*;
-
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;

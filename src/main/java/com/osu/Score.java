@@ -19,7 +19,7 @@ public class Score {
 
     public String timeSet;
 
-    public void set(JsonNode jsonNode) {
+    public Score(JsonNode jsonNode) {
         totalScore = jsonNode.get("score").asInt();
         maxCombo = jsonNode.get("max_combo").asInt();
         accuracy = jsonNode.get("accuracy").asDouble();

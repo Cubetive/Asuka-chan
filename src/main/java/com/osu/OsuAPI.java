@@ -36,8 +36,7 @@ public class OsuAPI {
         String temp = BaseUrl + users + user + "/osu?key=" + key;
         URI uri = new URI(temp.replace(" ", "%20"));
 
-        UserData userData = new UserData();
-        userData.set(sendGetRequest(uri));
+        UserData userData = new UserData(sendGetRequest(uri));
 
         return userData;
     }
@@ -45,8 +44,7 @@ public class OsuAPI {
     public Beatmap getBeatmap(int id) throws Exception {
         URI uri = new URI(BaseUrl + beatmap + String.format("%s", id));
 
-        Beatmap beatmap = new Beatmap();
-        beatmap.set(sendGetRequest(uri));
+        Beatmap beatmap = new Beatmap(sendGetRequest(uri));
 
         return beatmap;
     }
@@ -72,12 +70,10 @@ public class OsuAPI {
         URI uri = new URI(BaseUrl + beatmap + String.format("%s/scores/users/%s/all?legacy_only=1", id, uid));
 
         List<Score> scores = new ArrayList<>();
-        Score score = new Score();
 
         JsonNode jsonNode = sendGetRequest(uri);
         for (JsonNode node: jsonNode.get("scores")) {
-            score.set(node);
-            scores.add(score);
+            scores.add(new Score(node));
         }
 
         return scores;

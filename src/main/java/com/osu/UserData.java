@@ -28,7 +28,7 @@ public class UserData {
 
     public JsonNode gradeCounts;
 
-    public void set(JsonNode jsonNode) throws Exception {
+    public UserData(JsonNode jsonNode) throws Exception {
         username = jsonNode.get("username").asText();
         id = jsonNode.get("id").asInt();
         avatarUrl = new URL(jsonNode.get("avatar_url").asText());

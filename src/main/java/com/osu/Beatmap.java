@@ -20,7 +20,7 @@ public class Beatmap {
     public String artist;
     public String creator;
 
-    public void set(JsonNode jsonNode) {
+    public Beatmap(JsonNode jsonNode) {
         status = jsonNode.get("status").asText();
 
         sr = jsonNode.get("difficulty_rating").asDouble();

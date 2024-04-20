@@ -1,4 +1,4 @@
-package com.fubukigrin;
+package com.fubukigrin.utilities;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

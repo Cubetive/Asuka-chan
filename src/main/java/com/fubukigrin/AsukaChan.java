@@ -5,6 +5,7 @@ import java.util.*;
 import javax.security.auth.login.LoginException;
 
 import com.fubukigrin.listeners.EventListener;
+import com.fubukigrin.utilities.DotenvConfig;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -27,7 +28,7 @@ public class AsukaChan {
         // Initializing the builder
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
         // Enable intents
-        builder.enableIntents(GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES);
+        builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
         // Setting the bot's status
         builder.setStatus(OnlineStatus.ONLINE);
         // Setting the bot's activity

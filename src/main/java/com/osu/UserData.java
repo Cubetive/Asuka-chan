@@ -25,6 +25,7 @@ public class UserData {
     public int playTime;
 
     public String lastSeen;
+    public String joinDate;
 
     public JsonNode gradeCounts;
 
@@ -38,6 +39,7 @@ public class UserData {
         peakRankUpdate = jsonNode.get("rank_highest").get("updated_at").asText();
 
         lastSeen = jsonNode.get("last_visit").asText();
+        joinDate = jsonNode.get("join_date").asText();
 
         JsonNode stats = jsonNode.get("statistics");
 

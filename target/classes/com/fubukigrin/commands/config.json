@@ -25,5 +25,18 @@
         "description": "The highest number of the range, default is 100"
       }
     ]
+  },
+  {
+    "name_id": "osu",
+    "command_class": "Osu",
+    "category": "osu",
+    "description": "Get an osu profile",
+    "args": [
+      {
+        "type": "STRING",
+        "name": "user",
+        "description": "Specify username or user id"
+      }
+    ]
   }
 ]

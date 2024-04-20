@@ -1,0 +1,92 @@
+package com.fubukigrin.commands.osu;
+
+import java.awt.Color;
+
+import javax.annotation.Nonnull;
+
+import com.fubukigrin.commands.InvalidCommandArgumentException;
+import com.fubukigrin.utilities.ConvertDateTime;
+import com.osu.OsuAPI;
+import com.osu.UserData;
+
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+
+public class Osu {
+    @SuppressWarnings("null")
+    public static void execute(@Nonnull SlashCommandInteractionEvent event) {
+        event.deferReply().queue();
+
+        String user = (event.getOption("user") != null) ? event.getOption("user").getAsString().replace("\"", "") : " ";
+        MessageEmbed embed;
+
+        try {
+            OsuAPI osuAPI = new OsuAPI();
+            UserData userData = osuAPI.getUserData(user);
+            
+            embed = buildEmbed(userData).build();
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+            InvalidCommandArgumentException ica = new InvalidCommandArgumentException(String.format("User `%s` was not found", user));
+            embed = ica.getEmbed().build();
+        }
+
+        event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
+    }
+
+    public static void execute(@Nonnull MessageReceivedEvent event, String[] args) {
+        String user = null;
+
+        try {
+            if (args.length != 1) throw new Exception();
+
+            user = args[0].replace("\"", "");
+            OsuAPI osuAPI = new OsuAPI();
+            UserData userData = osuAPI.getUserData(user);
+            
+            MessageEmbed embed = buildEmbed(userData).build();
+            event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
+        } 
+        catch (Exception e) {
+            String error = (user != null) ? String.format("User %s was not found", user) : "Invalid arguments! Please try again";
+
+            InvalidCommandArgumentException ica = new InvalidCommandArgumentException(error);
+            String errorMessage = ica.getErrorMessage();
+            event.getChannel().sendMessage(errorMessage).queue();
+        }
+    }
+
+    public static EmbedBuilder buildEmbed(UserData userData) {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(new Color(195, 98, 110));
+
+        // Title
+        String title = String.format("%s: %,.2fpp (#%,d %s%,d)", userData.username, userData.pp, userData.globalRank, userData.countryCode, userData.countryRank);
+        String profileLink = "https://osu.ppy.sh/users/" + userData.id + "/osu";
+        eb.setAuthor(title, profileLink);
+
+        // Avatar and flag
+        eb.setThumbnail(userData.avatarUrl.toString());
+
+        // Body
+        int playTimeHours = userData.playTime / 3600;
+        double currentLevel = userData.levelCurrent + (userData.levelProgress / 100.0);
+
+        StringBuffer body = new StringBuffer();
+        body.append(String.format("**▸ Peak rank:** `%,d` achieved %s%n", userData.peakRank, ConvertDateTime.toRelativeDiscordTimestamp(userData.peakRankUpdate)))
+            .append(String.format("**▸ Accuracy:** `%,.2f%s` • **Level**: `%s`%n", userData.accuracy, "%" ,currentLevel))
+            .append(String.format("**▸ Playcount:** `%,d` (`%d hrs`)%n", userData.playCount, playTimeHours))
+            .append(String.format("**▸ Join date:** `%s` (%s)", ConvertDateTime.toShortDate(userData.joinDate), ConvertDateTime.toRelativeDiscordTimestamp(userData.joinDate)));
+
+        eb.setDescription(body.toString());
+
+        // Footer (nothing right now)
+        // String footer = "";
+
+        return eb;
+    }
+}

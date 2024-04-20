@@ -5,15 +5,17 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.io.*;
-import java.net.*;
 
 import javax.annotation.Nonnull;
+
+import java.io.*;
+import java.net.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fubukigrin.utilities.DotenvConfig;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -100,7 +102,7 @@ public class CommandManager extends ListenerAdapter {
             Method m = c.getMethod("execute", new Class[] {SlashCommandInteractionEvent.class});
             m.invoke(null, event);
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -125,7 +127,7 @@ public class CommandManager extends ListenerAdapter {
             Method m = c.getMethod("execute", new Class[] {MessageReceivedEvent.class, String[].class});
             m.invoke(null, event, args);
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

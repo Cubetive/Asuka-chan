@@ -2,8 +2,8 @@ package com.fubukigrin.listeners;
 
 import javax.annotation.Nonnull;
 
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -40,7 +40,7 @@ public class EventListener extends ListenerAdapter{
         }
 
         if (event.isFromGuild()) {
-            if (message != null) event.getTextChannel().sendMessage(message).queue();
+            if (message != null) event.getChannel().sendMessage(message).queue();
         }
         else if (event.isFromType(ChannelType.PRIVATE))
         {

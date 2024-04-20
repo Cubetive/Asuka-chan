@@ -105,7 +105,7 @@ public class Osu {
         eb.setDescription(body.toString());
 
         // Footer (nothing right now)
-        String footer = (userData.isOnline) ? "Currently online on osu!Bancho" : String.format("Last seen %s on osu! Bancho", ConvertDateTime.toRelativeTime(userData.lastSeen));
+        String footer = (userData.isOnline) ? "Currently online on osu! Bancho" : String.format("Last seen %s on osu! Bancho", ConvertDateTime.toRelativeTime(userData.lastSeen));
         String status = (userData.isOnline) ? ONLINE : OFFLINE;
 
         eb.setFooter(footer, status);

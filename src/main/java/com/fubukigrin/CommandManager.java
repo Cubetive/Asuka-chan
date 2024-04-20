@@ -33,7 +33,9 @@ public class CommandManager extends ListenerAdapter {
     private static Hashtable<String, String> commandClass = new Hashtable<String, String>();
     // Get the category of the command, where <name_id, category>
     private static Hashtable<String, String> commandCategory = new Hashtable<String, String>();
-
+    // Get the main command name from altername command names, where <alt_name, name_id>
+    private static Hashtable<String, String> commandAlt = new Hashtable<String, String>();
+    
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
         System.out.println("CommandManager --- ready!");
@@ -82,6 +84,12 @@ public class CommandManager extends ListenerAdapter {
                 commandData.add(sc);
                 commandClass.put(cmd.get("name_id").asText(), cmd.get("command_class").asText());
                 commandCategory.put(cmd.get("name_id").asText(), cmd.get("category").asText());
+
+                // Add alternate command names
+                JsonNode alts = cmd.get("alt_names");
+                for (JsonNode alt: alts) {
+                    commandAlt.put(alt.asText(), cmd.get("name_id").asText());
+                }
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -121,6 +129,8 @@ public class CommandManager extends ListenerAdapter {
         // Get name of the command and its arguments
         String command = message[0].substring(prefix.length());
         String[] args = (message.length >= 2) ? Arrays.copyOfRange(message, 1, message.length) : null;
+        // If the command name is an alt, get the main command name
+        if (commandAlt.containsKey(command)) command = commandAlt.get(command);
 
         try {
             Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(command) + "." + commandClass.get(command));

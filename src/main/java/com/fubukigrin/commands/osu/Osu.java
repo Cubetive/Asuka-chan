@@ -59,6 +59,7 @@ public class Osu {
             event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
         } 
         catch (Exception e) {
+            e.printStackTrace();
             String error = (user != null) ? String.format("User `%s` was not found", user) : "Invalid arguments! Please try again";
 
             InvalidCommandArgumentException ica = new InvalidCommandArgumentException(error);
@@ -68,8 +69,6 @@ public class Osu {
     }
 
     public static EmbedBuilder buildEmbed(UserData userData) {
-        System.out.println(userData.lastSeen);
-
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(new Color(195, 98, 110));
 
@@ -105,7 +104,9 @@ public class Osu {
         eb.setDescription(body.toString());
 
         // Footer (nothing right now)
-        String footer = (userData.isOnline) ? "Currently online on osu! Bancho" : String.format("Last seen %s on osu! Bancho", ConvertDateTime.toRelativeTime(userData.lastSeen));
+        String footer = (userData.isOnline || userData.lastSeen == "null")
+                        ? "On osu! Bancho" 
+                        : String.format("Last seen %s on osu! Bancho", ConvertDateTime.toRelativeTime(userData.lastSeen));
         String status = (userData.isOnline) ? ONLINE : OFFLINE;
 
         eb.setFooter(footer, status);

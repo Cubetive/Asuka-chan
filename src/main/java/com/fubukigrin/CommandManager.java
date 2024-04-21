@@ -57,6 +57,7 @@ public class CommandManager extends ListenerAdapter {
             if (command.Args != null) {
                 cmd.addOptions(command.Args);
             }
+            cmd.queue();
         }
     }
 

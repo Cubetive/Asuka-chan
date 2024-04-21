@@ -1,5 +1,7 @@
 package com.fubukigrin.commands;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nonnull;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -21,7 +23,7 @@ public abstract class BaseCommand implements IBaseCommand {
     public String CommandClass;
     public String CommandCategory;
     public String Description;
-    public OptionData[] Args;
+    public ArrayList<OptionData> Args;
     public String[] AltNames;
 
     public void SetNameId(String name_id) {
@@ -42,13 +44,9 @@ public abstract class BaseCommand implements IBaseCommand {
 
     public void AddArgs(OptionData arg) {
         if (Args == null) {
-            Args = new OptionData[] { arg };
-        } else {
-            OptionData[] newArgs = new OptionData[Args.length + 1];
-            System.arraycopy(Args, 0, newArgs, 0, Args.length);
-            newArgs[Args.length] = arg;
-            Args = newArgs;
+            Args = new ArrayList<OptionData>();
         }
+        Args.add(arg);
     }
 
     public void AddArgs(@Nonnull OptionType type, @Nonnull String name, @Nonnull String description,
@@ -64,7 +62,7 @@ public abstract class BaseCommand implements IBaseCommand {
             String command_class,
             String category,
             String description,
-            OptionData[] args,
+            ArrayList<OptionData> args,
             String[] alt_names) {
         NameId = name_id;
         CommandClass = command_class;
@@ -85,7 +83,7 @@ public abstract class BaseCommand implements IBaseCommand {
         CommandClass = command_class;
         CommandCategory = category;
         Description = description;
-        Args = new OptionData[] {};
+        Args = new ArrayList<OptionData>();
         AltNames = new String[] { alt_names };
     }
 

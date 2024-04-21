@@ -28,7 +28,7 @@ public class OsuAPI {
         objectMapper = new ObjectMapper();
     }
 
-    public UserData getUserData(String user) throws Exception {
+    public UserData getUser(String user) throws Exception {
         String key;
         if (NumberUtils.isNumber(user)) { key = "id"; }
         else { key = "username"; }
@@ -68,6 +68,32 @@ public class OsuAPI {
 
     public List<Score> getUserScores(int id, int uid) throws Exception {
         URI uri = new URI(BaseUrl + beatmap + String.format("%s/scores/users/%s/all?legacy_only=1", id, uid));
+
+        List<Score> scores = new ArrayList<>();
+
+        JsonNode jsonNode = sendGetRequest(uri);
+        for (JsonNode node: jsonNode.get("scores")) {
+            scores.add(new Score(node));
+        }
+
+        return scores;
+    }
+
+    public List<Score> getTopScores(int uid) throws Exception {
+        URI uri = new URI(BaseUrl + users + String.format("%s/scores/best?legacy_only=1&limit=10"));
+
+        List<Score> scores = new ArrayList<>();
+
+        JsonNode jsonNode = sendGetRequest(uri);
+        for (JsonNode node: jsonNode.get("scores")) {
+            scores.add(new Score(node));
+        }
+
+        return scores;
+    }
+
+    public List<Score> getRecentScores(int uid) throws Exception {
+        URI uri = new URI(BaseUrl + users + String.format("%s/scores/recent?legacy_only=1&include_fails=1&limit=10"));
 
         List<Score> scores = new ArrayList<>();
 

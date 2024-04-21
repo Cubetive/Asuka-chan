@@ -32,7 +32,7 @@ public class Osu {
 
         try {
             OsuAPI osuAPI = new OsuAPI();
-            UserData userData = osuAPI.getUserData(user);
+            UserData userData = osuAPI.getUser(user);
             
             embed = buildEmbed(userData).build();
         } 
@@ -53,7 +53,7 @@ public class Osu {
 
             user = args[0].replace("\"", "");
             OsuAPI osuAPI = new OsuAPI();
-            UserData userData = osuAPI.getUserData(user);
+            UserData userData = osuAPI.getUser(user);
             
             MessageEmbed embed = buildEmbed(userData).build();
             event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();

@@ -1,0 +1,80 @@
+package com.fubukigrin.commands.osu;
+
+import java.util.List;
+import javax.annotation.Nonnull;
+
+import com.fubukigrin.commands.InvalidCommandArgumentException;
+import com.fubukigrin.utilities.ConvertDateTime;
+import com.fubukigrin.utilities.OsuGrades;
+import com.osu.OsuAPI;
+import com.osu.Score;
+
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+
+@SuppressWarnings("null")
+public class RecentScores {
+    public static void execute(@Nonnull SlashCommandInteractionEvent event) {
+        event.deferReply().queue();
+
+        String user = event.getOption("user").getAsString().replace("\"", "");
+        MessageEmbed embed;
+
+        try {
+            OsuAPI osuAPI = new OsuAPI();
+            int uid = 0;
+            if (user != "")
+                uid = osuAPI.getUser(user).id;
+            else {
+                // do sth with the database i guess
+            }
+            
+            List<Score> scores = osuAPI.getRecentScores(uid);
+            
+            embed = buildEmbed(scores).build();
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+            InvalidCommandArgumentException ica = new InvalidCommandArgumentException(String.format("User `%s` was not found", user));
+            embed = ica.getEmbed().build();
+        }
+
+        event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
+    }
+
+    public static void execute(@Nonnull MessageReceivedEvent event, String[] args) {
+        String user = null;
+
+        try {
+            if (args.length != 1) user = args[0].replace("\"", "");
+            
+            OsuAPI osuAPI = new OsuAPI();
+            int uid = 0;
+            if (user != null)
+                uid = osuAPI.getUser(user).id;
+            else {
+                // do sth with the database i guess
+            }
+            
+            List<Score> scores = osuAPI.getRecentScores(uid);
+            
+            MessageEmbed embed = buildEmbed(scores).build();
+            event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+            String error = (user != null) ? String.format("User `%s` was not found", user) : "Invalid arguments! Please try again";
+
+            InvalidCommandArgumentException ica = new InvalidCommandArgumentException(error);
+            String errorMessage = ica.getErrorMessage();
+            event.getChannel().sendMessage(errorMessage).queue();
+        }
+    }
+
+    public static EmbedBuilder buildEmbed(List<Score> scores) {
+        return null;
+    }
+}

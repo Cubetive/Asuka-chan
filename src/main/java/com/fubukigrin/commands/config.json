@@ -42,5 +42,32 @@
       }
     ],
     "alt_names": ["profile"]
+  },
+  {
+    "name_id": "recent",
+    "command_class": "RecentScores",
+    "category": "osu",
+    "description": "Get player's recent scores",
+    "args": [
+      {
+        "type": "STRING",
+        "name": "user",
+        "description": "Specify username or user id"
+      }
+    ],
+    "alt_names": ["rs"]
+  },
+  {
+    "name_id": "top",
+    "command_class": "TopScores",
+    "category": "osu",
+    "description": "Get player's top scores",
+    "args": [
+      {
+        "type": "STRING",
+        "name": "user",
+        "description": "Specify username or user id"
+      }
+    ]
   }
 ]

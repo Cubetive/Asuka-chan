@@ -2,6 +2,8 @@ package com.fubukigrin.commands;
 
 import java.awt.Color;
 
+import com.fubukigrin.utilities.ColorTheme;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /**
@@ -11,7 +13,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  */
 public class InvalidCommandArgumentException {
     private String errorMessage;
-    private Color embedColor = new Color(247, 60, 27);
+    private Color embedColor = ColorTheme.ERROR;
 
     public InvalidCommandArgumentException(String message) {
         errorMessage = message;

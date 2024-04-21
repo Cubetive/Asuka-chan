@@ -1,6 +1,5 @@
 package com.fubukigrin.commands.osu;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import com.fubukigrin.commands.InvalidCommandArgumentException;
+import com.fubukigrin.utilities.ColorTheme;
 import com.fubukigrin.utilities.ConvertDateTime;
 import com.fubukigrin.utilities.OsuGrades;
 import com.osu.OsuAPI;
@@ -70,7 +70,7 @@ public class Osu {
 
     public static EmbedBuilder buildEmbed(UserData userData) {
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(new Color(195, 98, 110));
+        eb.setColor(ColorTheme.DEFAULT);
 
         // Title
         String title = String.format("%s: %,.2fpp (#%,d %s%,d)", userData.username, userData.pp, userData.globalRank, userData.countryCode, userData.countryRank);

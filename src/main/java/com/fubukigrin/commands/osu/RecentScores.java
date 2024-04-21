@@ -1,6 +1,6 @@
 package com.fubukigrin.commands.osu;
 
-import java.util.List;
+import java.util.*;
 import javax.annotation.Nonnull;
 
 import com.fubukigrin.commands.InvalidCommandArgumentException;
@@ -8,6 +8,7 @@ import com.fubukigrin.utilities.ConvertDateTime;
 import com.fubukigrin.utilities.OsuGrades;
 import com.osu.OsuAPI;
 import com.osu.Score;
+import com.osu.UserData;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -32,9 +33,10 @@ public class RecentScores {
                 // do sth with the database i guess
             }
             
+            UserData userData = osuAPI.getUser(user);
             List<Score> scores = osuAPI.getRecentScores(uid);
             
-            embed = buildEmbed(scores).build();
+            embed = buildEmbed(userData, scores).build();
         } 
         catch (Exception e) {
             e.printStackTrace();
@@ -49,8 +51,9 @@ public class RecentScores {
         String user = null;
 
         try {
-            if (args.length != 1) user = args[0].replace("\"", "");
+            if (args.length != 1) throw new Exception();
             
+            user = args[0].replace("\"", "");
             OsuAPI osuAPI = new OsuAPI();
             int uid = 0;
             if (user != null)
@@ -59,9 +62,10 @@ public class RecentScores {
                 // do sth with the database i guess
             }
             
+            UserData userData = osuAPI.getUser(user);
             List<Score> scores = osuAPI.getRecentScores(uid);
             
-            MessageEmbed embed = buildEmbed(scores).build();
+            MessageEmbed embed = buildEmbed(userData, scores).build();
             event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
         } 
         catch (Exception e) {
@@ -74,7 +78,7 @@ public class RecentScores {
         }
     }
 
-    public static EmbedBuilder buildEmbed(List<Score> scores) {
+    public static EmbedBuilder buildEmbed(UserData userData, List<Score> scores) {
         return null;
     }
 }

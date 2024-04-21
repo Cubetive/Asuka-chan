@@ -31,11 +31,11 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 public class CommandManager extends ListenerAdapter {
     // Get the Class of the command, where <name_id, command_class>
-    private static Hashtable<String, String> commandClass = new Hashtable<String, String>();
+    private static HashMap<String, String> commandClass = new HashMap<String, String>();
     // Get the category of the command, where <name_id, category>
-    private static Hashtable<String, String> commandCategory = new Hashtable<String, String>();
+    private static HashMap<String, String> commandCategory = new HashMap<String, String>();
     // Get the main command name from altername command names, where <alt_name, name_id>
-    private static Hashtable<String, String> commandAlt = new Hashtable<String, String>();
+    private static HashMap<String, String> commandAlt = new HashMap<String, String>();
     
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
@@ -142,8 +142,19 @@ public class CommandManager extends ListenerAdapter {
         }
     }
 
+    @SuppressWarnings({ "null", "rawtypes", "unchecked" })
     @Override
     public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
-        System.out.println("button pressed: command is " + event.getButton().getId());
+        String[] components = event.getButton().getId().split(" ");
+        String classComponent = components[0];
+        String methodComponent = components[1];
+        
+        try {
+            Class c = cl.loadClass("com.fubukigrin.commands." + commandCategory.get(classComponent) + "." + commandClass.get(classComponent));
+            Method m = c.getMethod(methodComponent, new Class[] {ButtonInteractionEvent.class});
+            m.invoke(null, event);
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }

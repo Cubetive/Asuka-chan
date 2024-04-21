@@ -72,7 +72,7 @@ public class OsuAPI {
         List<Score> scores = new ArrayList<>();
 
         JsonNode jsonNode = sendGetRequest(uri);
-        for (JsonNode node: jsonNode.get("scores")) {
+        for (JsonNode node: jsonNode) {
             scores.add(new Score(node));
         }
 
@@ -80,12 +80,12 @@ public class OsuAPI {
     }
 
     public List<Score> getTopScores(int uid) throws Exception {
-        URI uri = new URI(BaseUrl + users + String.format("%s/scores/best?legacy_only=1&limit=10", uid));
+        URI uri = new URI(BaseUrl + users + String.format("%s/scores/best?legacy_only=1", uid));
 
         List<Score> scores = new ArrayList<>();
 
         JsonNode jsonNode = sendGetRequest(uri);
-        for (JsonNode node: jsonNode.get("scores")) {
+        for (JsonNode node: jsonNode) {
             scores.add(new Score(node));
         }
 

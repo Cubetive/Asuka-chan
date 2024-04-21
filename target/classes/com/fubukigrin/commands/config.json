@@ -68,6 +68,7 @@
         "name": "user",
         "description": "Specify username or user id"
       }
-    ]
+    ],
+    "alt_names": ["t"]
   }
 ]

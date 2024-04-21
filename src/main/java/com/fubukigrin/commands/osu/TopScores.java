@@ -1,5 +1,6 @@
 package com.fubukigrin.commands.osu;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 
@@ -13,6 +14,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 @SuppressWarnings("null")
@@ -42,7 +45,9 @@ public class TopScores {
             embed = ica.getEmbed().build();
         }
 
-        event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
+        event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed))
+                       .setActionRow(buildButtons())
+                       .queue();
     }
 
     public static void execute(@Nonnull MessageReceivedEvent event, String[] args) {
@@ -62,7 +67,9 @@ public class TopScores {
             List<Score> scores = osuAPI.getTopScores(uid);
             
             MessageEmbed embed = buildEmbed(scores).build();
-            event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
+            event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed))
+                              .setActionRow(buildButtons())
+                              .queue();
         } 
         catch (Exception e) {
             e.printStackTrace();
@@ -75,6 +82,16 @@ public class TopScores {
     }
 
     public static EmbedBuilder buildEmbed(List<Score> scores) {
-        return null;
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setAuthor("test");
+
+        return eb;
+    }
+
+    public static List<ItemComponent> buildButtons() {
+        List<ItemComponent> buttons = new ArrayList<ItemComponent>();
+        buttons.add(Button.secondary("meow :3", "test"));
+
+        return buttons;
     }
 }

@@ -80,7 +80,7 @@ public class OsuAPI {
     }
 
     public List<Score> getTopScores(int uid) throws Exception {
-        URI uri = new URI(BaseUrl + users + String.format("%s/scores/best?legacy_only=1&limit=10"));
+        URI uri = new URI(BaseUrl + users + String.format("%s/scores/best?legacy_only=1&limit=10", uid));
 
         List<Score> scores = new ArrayList<>();
 

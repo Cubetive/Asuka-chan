@@ -21,6 +21,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -127,7 +128,7 @@ public class CommandManager extends ListenerAdapter {
         if (!message[0].startsWith(prefix) || event.getAuthor().isBot() || event.getAuthor().isSystem()) return;
 
         // Get name of the command and its arguments
-        String command = message[0].substring(prefix.length());
+        String command = message[0].substring(prefix.length()).toLowerCase();
         String[] args = (message.length >= 2) ? Arrays.copyOfRange(message, 1, message.length) : null;
         // If the command name is an alt, get the main command name
         if (commandAlt.containsKey(command)) command = commandAlt.get(command);
@@ -139,5 +140,10 @@ public class CommandManager extends ListenerAdapter {
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
+        System.out.println("button pressed: command is " + event.getButton().getId());
     }
 }

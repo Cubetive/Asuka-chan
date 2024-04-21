@@ -24,10 +24,14 @@ public class UserData {
     public int playCount;
     public int playTime;
 
+    public boolean isOnline;
     public String lastSeen;
     public String joinDate;
 
     public JsonNode gradeCounts;
+
+    public JsonNode achievements;
+    public JsonNode badges;
 
     public UserData(JsonNode jsonNode) throws Exception {
         username = jsonNode.get("username").asText();
@@ -38,6 +42,7 @@ public class UserData {
         peakRank = jsonNode.get("rank_highest").get("rank").asInt();
         peakRankUpdate = jsonNode.get("rank_highest").get("updated_at").asText();
 
+        isOnline = jsonNode.get("is_online").asBoolean();
         lastSeen = jsonNode.get("last_visit").asText();
         joinDate = jsonNode.get("join_date").asText();
 
@@ -56,5 +61,8 @@ public class UserData {
         playTime = stats.get("play_time").asInt();
 
         gradeCounts = stats.get("grade_counts");
+
+        achievements = jsonNode.get("user_achievements");
+        badges = jsonNode.get("badges");
     }
 }

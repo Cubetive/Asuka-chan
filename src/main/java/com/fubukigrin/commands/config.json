@@ -4,14 +4,16 @@
     "command_class": "Ping",
     "category": "generic",
     "description": "Ping the bot!",
-    "args": []
+    "args": [],
+    "alt_names": []
   },
   {
     "name_id": "boop",
     "command_class": "Boop",
     "category": "generic",
     "description": "Boop!",
-    "args": []
+    "args": [],
+    "alt_names": []
   },
   {
     "name_id": "roll",
@@ -24,7 +26,8 @@
         "name": "limit",
         "description": "The highest number of the range, default is 100"
       }
-    ]
+    ],
+    "alt_names": []
   },
   {
     "name_id": "osu",
@@ -37,6 +40,7 @@
         "name": "user",
         "description": "Specify username or user id"
       }
-    ]
+    ],
+    "alt_names": ["profile"]
   }
 ]

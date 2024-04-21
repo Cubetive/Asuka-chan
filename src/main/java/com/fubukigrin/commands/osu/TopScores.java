@@ -18,16 +18,34 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
+import com.fubukigrin.commands.BaseCommand;
+
 @SuppressWarnings("null")
-public class TopScores {
+public class TopScores extends BaseCommand {
     // Message id, Scores cache
     private HashMap<String, List<Score>> scoreCache = new HashMap<String, List<Score>>();
     // Message id, index cache
     private HashMap<String, Integer> indexCache = new HashMap<String, Integer>();
 
-    public static void execute(@Nonnull SlashCommandInteractionEvent event) {
+    TopScores() {
+        super(
+                "topscores",
+                "osu",
+                "Get top scores of a user",
+                "user",
+                new OptionData[] {
+                        new OptionData(
+                                OptionType.STRING, "user", "User to get recent scores from", true)
+                },
+                "");
+    }
+
+    @Override
+    public void execute(@Nonnull SlashCommandInteractionEvent event) {
         event.deferReply().queue();
 
         String user = event.getOption("user").getAsString().replace("\"", "");
@@ -41,29 +59,30 @@ public class TopScores {
             else {
                 // do sth with the database i guess
             }
-            
+
             UserData userData = osuAPI.getUser(user);
             List<Score> scores = osuAPI.getTopScores(uid);
-            
+
             embed = buildEmbed(userData, scores).build();
-        } 
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            InvalidCommandArgumentException ica = new InvalidCommandArgumentException(String.format("User `%s` was not found", user));
+            InvalidCommandArgumentException ica = new InvalidCommandArgumentException(
+                    String.format("User `%s` was not found", user));
             embed = ica.getEmbed().build();
         }
 
         event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed))
-                       .setActionRow(buildButtons(0))
-                       .queue();
+                .setActionRow(buildButtons(0))
+                .queue();
     }
 
-    public static void execute(@Nonnull MessageReceivedEvent event, String[] args) {
+    public void execute(@Nonnull MessageReceivedEvent event, String[] args) {
         String user = null;
 
         try {
-            if (args.length != 1) throw new Exception();
-            
+            if (args.length != 1)
+                throw new Exception();
+
             user = args[0].replace("\"", "");
             OsuAPI osuAPI = new OsuAPI();
             int uid = 0;
@@ -72,18 +91,18 @@ public class TopScores {
             else {
                 // do sth with the database i guess
             }
-            
+
             UserData userData = osuAPI.getUser(user);
             List<Score> scores = osuAPI.getTopScores(uid);
-            
+
             MessageEmbed embed = buildEmbed(userData, scores).build();
             event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed))
-                              .setActionRow(buildButtons(0))
-                              .queue();
-        } 
-        catch (Exception e) {
+                    .setActionRow(buildButtons(0))
+                    .queue();
+        } catch (Exception e) {
             e.printStackTrace();
-            String error = (user != null) ? String.format("User `%s` was not found", user) : "Invalid arguments! Please try again";
+            String error = (user != null) ? String.format("User `%s` was not found", user)
+                    : "Invalid arguments! Please try again";
 
             InvalidCommandArgumentException ica = new InvalidCommandArgumentException(error);
             String errorMessage = ica.getErrorMessage();
@@ -96,7 +115,8 @@ public class TopScores {
         eb.setColor(ColorTheme.DEFAULT);
 
         // Title
-        String title = String.format("%s: %,.2fpp (#%,d %s%,d)", userData.username, userData.pp, userData.globalRank, userData.countryCode, userData.countryRank);
+        String title = String.format("%s: %,.2fpp (#%,d %s%,d)", userData.username, userData.pp, userData.globalRank,
+                userData.countryCode, userData.countryRank);
         String profileLink = "https://osu.ppy.sh/users/" + userData.id + "/osu";
         String iconURL = "https://assets.ppy.sh/old-flags/" + userData.countryCode + ".png";
         eb.setAuthor(title, profileLink, iconURL);
@@ -105,7 +125,6 @@ public class TopScores {
         eb.setThumbnail(userData.avatarUrl.toString());
 
         // Body
-
 
         return eb;
     }
@@ -122,8 +141,7 @@ public class TopScores {
         if (index == 0) {
             fullBackwards = fullBackwards.asDisabled();
             backwards = backwards.asDisabled();
-        }
-        else if (index == 9) {
+        } else if (index == 9) {
             fullForwards = fullForwards.asDisabled();
             forwards = forwards.asDisabled();
         }

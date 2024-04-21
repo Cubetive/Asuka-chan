@@ -38,7 +38,7 @@ public class AsukaChan {
 
         // Register listeners
         shardManager.addEventListener(new EventListener(),
-                                      new CommandManager());
+                new CommandManager());
     }
 
     public static void main(String[] args) {

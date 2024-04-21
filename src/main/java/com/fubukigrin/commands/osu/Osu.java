@@ -33,11 +33,9 @@ public class Osu extends BaseCommand {
                 "osu",
                 "Get information about an osu! user",
                 "user",
-                new OptionData[] {
-                        new OptionData(
-                                OptionType.STRING, "user", "User to get recent scores from", true)
-                },
                 "");
+
+        AddArgs(OptionType.USER, "user", "The user to get information about", true);
     }
 
     @SuppressWarnings("null")

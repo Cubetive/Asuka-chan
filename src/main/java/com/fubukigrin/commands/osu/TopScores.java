@@ -37,11 +37,9 @@ public class TopScores extends BaseCommand {
                 "osu",
                 "Get top scores of a user",
                 "user",
-                new OptionData[] {
-                        new OptionData(
-                                OptionType.STRING, "user", "User to get recent scores from", true)
-                },
                 "");
+
+        AddArgs(OptionType.USER, "user", "The user to get top scores of", false);
     }
 
     @Override

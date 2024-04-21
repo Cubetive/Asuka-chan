@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
@@ -29,11 +28,9 @@ public class RecentScores extends BaseCommand {
                 "osu",
                 "Get recent scores of a user",
                 "user",
-                new OptionData[] {
-                        new OptionData(
-                                OptionType.STRING, "user", "User to get recent scores from", true)
-                },
                 "");
+
+        AddArgs(OptionType.USER, "user", "The user to get recent scores of", false);
     }
 
     @Override

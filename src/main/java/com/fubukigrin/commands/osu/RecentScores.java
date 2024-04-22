@@ -4,8 +4,6 @@ import java.util.*;
 import javax.annotation.Nonnull;
 
 import com.fubukigrin.commands.InvalidCommandArgumentException;
-import com.fubukigrin.utilities.ConvertDateTime;
-import com.fubukigrin.utilities.OsuGrades;
 import com.osu.OsuAPI;
 import com.osu.Score;
 import com.osu.UserData;
@@ -30,7 +28,7 @@ public class RecentScores extends BaseCommand {
                 "user",
                 "");
 
-        AddArgs(OptionType.USER, "user", "The user to get recent scores of", false);
+        AddArgs(OptionType.STRING, "user", "The user to get recent scores of", false);
     }
 
     @Override

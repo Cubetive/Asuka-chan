@@ -2,14 +2,25 @@ package com.fubukigrin.commands.generic;
 
 import javax.annotation.Nonnull;
 
+import com.fubukigrin.commands.BaseCommand;
+
 import java.util.Random;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class Roll {
+public class Roll extends BaseCommand {
+    Roll() {
+        super(
+                "roll",
+                "generic",
+                "Roll!",
+                "",
+                "");
+    }
+
     @SuppressWarnings("null")
-    public static void execute(@Nonnull SlashCommandInteractionEvent event) {
+    public void execute(@Nonnull SlashCommandInteractionEvent event) {
         String message = "";
         int limit = (event.getOption("limit") != null) ? event.getOption("limit").getAsInt() : 100;
 
@@ -19,14 +30,13 @@ public class Roll {
         event.reply(message).queue();
     }
 
-    public static void execute(@Nonnull MessageReceivedEvent event, String[] args) {
+    public void execute(@Nonnull MessageReceivedEvent event, String[] args) {
         String message = "";
         int limit;
 
         try {
             limit = (args.length > 1) ? Integer.parseInt(args[0]) : 100;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Ignore if user doesn't input an actual limit
             limit = 100;
         }
@@ -37,9 +47,11 @@ public class Roll {
         event.getChannel().sendMessage(message).queue();
     }
 
-    private static int rollNum(int limit) {
-        // Check if number is less than 2, which defaults it back to 100 if it's the case
-        if (limit < 2) limit = 100;
+    private int rollNum(int limit) {
+        // Check if number is less than 2, which defaults it back to 100 if it's the
+        // case
+        if (limit < 2)
+            limit = 100;
 
         // Pseudo random number generator
         Random random = new Random();

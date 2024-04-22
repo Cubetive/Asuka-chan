@@ -18,7 +18,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import com.fubukigrin.commands.BaseCommand;
@@ -35,7 +34,7 @@ public class Osu extends BaseCommand {
                 "user",
                 "");
 
-        AddArgs(OptionType.USER, "user", "The user to get information about", true);
+        AddArgs(OptionType.STRING, "user", "The user to get information about", true);
     }
 
     @SuppressWarnings("null")

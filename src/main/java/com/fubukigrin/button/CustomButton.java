@@ -2,10 +2,13 @@ package com.fubukigrin.button;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+
 import com.fubukigrin.listeners.ButtonListener;
 
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.internal.interactions.component.ButtonImpl;
 
@@ -13,6 +16,11 @@ public class CustomButton extends ButtonImpl {
 
     private long Timeout;
     private final ArrayList<ButtonCallback.Click> ButtonCallbackList = new ArrayList<ButtonCallback.Click>();
+
+    public CustomButton(String id, String label, ButtonStyle style) {
+        super(id + "_" + System.currentTimeMillis(), label, style, false, null);
+        ButtonListener.registerButton(getId(), this);
+    }
 
     public CustomButton(String id, String label, ButtonStyle style, boolean disabled, Emoji emoji) {
         super(id + "_" + System.currentTimeMillis(), label, style, disabled, emoji);
@@ -40,5 +48,11 @@ public class CustomButton extends ButtonImpl {
             callback.execute(event);
             System.out.println(getId() + " executed");
         }
+    }
+
+    @Override
+    @Nonnull
+    public CustomButton asDisabled() {
+        return new CustomButton(getId(), getLabel(), getStyle(), true, getEmoji());
     }
 }

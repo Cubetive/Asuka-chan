@@ -5,9 +5,7 @@ import javax.annotation.Nonnull;
 
 import com.fubukigrin.commands.InvalidCommandArgumentException;
 import com.fubukigrin.utilities.ColorTheme;
-import com.fubukigrin.utilities.ConvertDateTime;
 import com.fubukigrin.utilities.Icons;
-import com.fubukigrin.utilities.OsuGrades;
 import com.osu.OsuAPI;
 import com.osu.Score;
 import com.osu.UserData;
@@ -17,12 +15,12 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
+import com.fubukigrin.button.ButtonCallback;
+import com.fubukigrin.button.CustomButton;
 import com.fubukigrin.commands.BaseCommand;
 
 @SuppressWarnings("null")
@@ -40,7 +38,7 @@ public class TopScores extends BaseCommand {
                 "user",
                 "");
 
-        AddArgs(OptionType.USER, "user", "The user to get top scores of", false);
+        AddArgs(OptionType.STRING, "user", "The user to get top scores of", false);
     }
 
     @Override
@@ -128,14 +126,55 @@ public class TopScores extends BaseCommand {
         return eb;
     }
 
-    public static List<Button> buildButtons(int index) {
-        List<Button> buttons = new ArrayList<Button>();
+    public static List<CustomButton> buildButtons(int index) {
+        List<CustomButton> buttons = new ArrayList<CustomButton>();
 
-        Button fullBackwards = Button.secondary("top fullBack", Icons.REWIND);
-        Button backwards = Button.secondary("top backward", Icons.ARROW_BACKWARD);
-        Button fullForwards = Button.secondary("top fullForward", Icons.FAST_FORWARD);
-        Button forwards = Button.secondary("top forward", Icons.ARROW_FORWARD);
-        Button select = Button.secondary("top selectIndex", Icons.ASTERISK);
+        // Button fullBackwards = Button.secondary("top fullBack", Icons.REWIND);
+        // Button backwards = Button.secondary("top backward", Icons.ARROW_BACKWARD);
+        // Button fullForwards = Button.secondary("top fullForward",
+        // Icons.FAST_FORWARD);
+        // Button forwards = Button.secondary("top forward", Icons.ARROW_FORWARD);
+        // Button select = Button.secondary("top selectIndex", Icons.ASTERISK);
+
+        CustomButton fullBackwards = new CustomButton("top fullBack", Icons.REWIND, ButtonStyle.SECONDARY);
+        fullBackwards.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                fullBack(event);
+            }
+        });
+
+        CustomButton backwards = new CustomButton("top backward", Icons.ARROW_BACKWARD, ButtonStyle.SECONDARY);
+        backwards.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                backward(event);
+            }
+        });
+
+        CustomButton fullForwards = new CustomButton("top fullForward", Icons.FAST_FORWARD, ButtonStyle.SECONDARY);
+        fullForwards.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                fullForward(event);
+            }
+        });
+
+        CustomButton forwards = new CustomButton("top forward", Icons.ARROW_FORWARD, ButtonStyle.SECONDARY);
+        forwards.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                forward(event);
+            }
+        });
+
+        CustomButton select = new CustomButton("top selectIndex", Icons.ASTERISK, ButtonStyle.SECONDARY);
+        select.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                selectIndex(event);
+            }
+        });
 
         if (index == 0) {
             fullBackwards = fullBackwards.asDisabled();

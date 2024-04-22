@@ -11,6 +11,12 @@ public class InitGeneric {
         Boop boop = new Boop();
         CommandManager.registerCommand(boop);
 
+        Ping ping = new Ping();
+        CommandManager.registerCommand(ping);
+
+        Roll roll = new Roll();
+        CommandManager.registerCommand(roll);
+
         System.out.println("Generic commands --- loaded!");
     }
 }

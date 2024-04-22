@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.security.auth.login.LoginException;
 
+import com.fubukigrin.listeners.ButtonListener;
 import com.fubukigrin.listeners.EventListener;
 import com.fubukigrin.utilities.DotenvConfig;
 
@@ -38,7 +39,8 @@ public class AsukaChan {
 
         // Register listeners
         shardManager.addEventListener(new EventListener(),
-                new CommandManager());
+                new CommandManager(),
+                new ButtonListener());
     }
 
     public static void main(String[] args) {

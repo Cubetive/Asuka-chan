@@ -4,6 +4,8 @@ import java.util.*;
 
 import javax.security.auth.login.LoginException;
 
+import com.fubukigrin.commands.CommandLoader;
+import com.fubukigrin.listeners.ButtonListener;
 import com.fubukigrin.listeners.EventListener;
 import com.fubukigrin.utilities.DotenvConfig;
 
@@ -35,10 +37,13 @@ public class AsukaChan {
         builder.setActivity(Activity.watching("fubukiGrin"));
         // Building the bot with ShardManager
         shardManager = builder.build();
+        // Load commands
+        CommandLoader.load();
 
         // Register listeners
         shardManager.addEventListener(new EventListener(),
-                                      new CommandManager());
+                new CommandManager(),
+                new ButtonListener());
     }
 
     public static void main(String[] args) {

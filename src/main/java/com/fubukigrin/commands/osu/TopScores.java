@@ -5,9 +5,7 @@ import javax.annotation.Nonnull;
 
 import com.fubukigrin.commands.InvalidCommandArgumentException;
 import com.fubukigrin.utilities.ColorTheme;
-import com.fubukigrin.utilities.ConvertDateTime;
 import com.fubukigrin.utilities.Icons;
-import com.fubukigrin.utilities.OsuGrades;
 import com.osu.OsuAPI;
 import com.osu.Score;
 import com.osu.UserData;
@@ -17,17 +15,33 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
+import com.fubukigrin.button.ButtonCallback;
+import com.fubukigrin.button.CustomButton;
+import com.fubukigrin.commands.BaseCommand;
+
 @SuppressWarnings("null")
-public class TopScores {
+public class TopScores extends BaseCommand {
     // Message id, Scores cache
     private HashMap<String, List<Score>> scoreCache = new HashMap<String, List<Score>>();
     // Message id, index cache
     private HashMap<String, Integer> indexCache = new HashMap<String, Integer>();
 
-    public static void execute(@Nonnull SlashCommandInteractionEvent event) {
+    TopScores() {
+        super(
+                "topscores",
+                "osu",
+                "Get top scores of a user",
+                "");
+
+        AddArgs(OptionType.STRING, "user", "The user to get top scores of", false);
+    }
+
+    @Override
+    public void execute(@Nonnull SlashCommandInteractionEvent event) {
         event.deferReply().queue();
 
         String user = event.getOption("user").getAsString().replace("\"", "");
@@ -41,29 +55,30 @@ public class TopScores {
             else {
                 // do sth with the database i guess
             }
-            
+
             UserData userData = osuAPI.getUser(user);
             List<Score> scores = osuAPI.getTopScores(uid);
-            
+
             embed = buildEmbed(userData, scores).build();
-        } 
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            InvalidCommandArgumentException ica = new InvalidCommandArgumentException(String.format("User `%s` was not found", user));
+            InvalidCommandArgumentException ica = new InvalidCommandArgumentException(
+                    String.format("User `%s` was not found", user));
             embed = ica.getEmbed().build();
         }
 
         event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed))
-                       .setActionRow(buildButtons(0))
-                       .queue();
+                .setActionRow(buildButtons(0))
+                .queue();
     }
 
-    public static void execute(@Nonnull MessageReceivedEvent event, String[] args) {
+    public void execute(@Nonnull MessageReceivedEvent event, String[] args) {
         String user = null;
 
         try {
-            if (args.length != 1) throw new Exception();
-            
+            if (args.length != 1)
+                throw new Exception();
+
             user = args[0].replace("\"", "");
             OsuAPI osuAPI = new OsuAPI();
             int uid = 0;
@@ -72,18 +87,18 @@ public class TopScores {
             else {
                 // do sth with the database i guess
             }
-            
+
             UserData userData = osuAPI.getUser(user);
             List<Score> scores = osuAPI.getTopScores(uid);
-            
+
             MessageEmbed embed = buildEmbed(userData, scores).build();
             event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed))
-                              .setActionRow(buildButtons(0))
-                              .queue();
-        } 
-        catch (Exception e) {
+                    .setActionRow(buildButtons(0))
+                    .queue();
+        } catch (Exception e) {
             e.printStackTrace();
-            String error = (user != null) ? String.format("User `%s` was not found", user) : "Invalid arguments! Please try again";
+            String error = (user != null) ? String.format("User `%s` was not found", user)
+                    : "Invalid arguments! Please try again";
 
             InvalidCommandArgumentException ica = new InvalidCommandArgumentException(error);
             String errorMessage = ica.getErrorMessage();
@@ -96,7 +111,8 @@ public class TopScores {
         eb.setColor(ColorTheme.DEFAULT);
 
         // Title
-        String title = String.format("%s: %,.2fpp (#%,d %s%,d)", userData.username, userData.pp, userData.globalRank, userData.countryCode, userData.countryRank);
+        String title = String.format("%s: %,.2fpp (#%,d %s%,d)", userData.username, userData.pp, userData.globalRank,
+                userData.countryCode, userData.countryRank);
         String profileLink = "https://osu.ppy.sh/users/" + userData.id + "/osu";
         String iconURL = "https://assets.ppy.sh/old-flags/" + userData.countryCode + ".png";
         eb.setAuthor(title, profileLink, iconURL);
@@ -106,24 +122,63 @@ public class TopScores {
 
         // Body
 
-
         return eb;
     }
 
-    public static List<Button> buildButtons(int index) {
-        List<Button> buttons = new ArrayList<Button>();
+    public static List<CustomButton> buildButtons(int index) {
+        List<CustomButton> buttons = new ArrayList<CustomButton>();
 
-        Button fullBackwards = Button.secondary("top fullBack", Icons.REWIND);
-        Button backwards = Button.secondary("top backward", Icons.ARROW_BACKWARD);
-        Button fullForwards = Button.secondary("top fullForward", Icons.FAST_FORWARD);
-        Button forwards = Button.secondary("top forward", Icons.ARROW_FORWARD);
-        Button select = Button.secondary("top selectIndex", Icons.ASTERISK);
+        // Button fullBackwards = Button.secondary("top fullBack", Icons.REWIND);
+        // Button backwards = Button.secondary("top backward", Icons.ARROW_BACKWARD);
+        // Button fullForwards = Button.secondary("top fullForward",
+        // Icons.FAST_FORWARD);
+        // Button forwards = Button.secondary("top forward", Icons.ARROW_FORWARD);
+        // Button select = Button.secondary("top selectIndex", Icons.ASTERISK);
+
+        CustomButton fullBackwards = new CustomButton("top fullBack", Icons.REWIND, ButtonStyle.SECONDARY);
+        fullBackwards.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                fullBack(event);
+            }
+        });
+
+        CustomButton backwards = new CustomButton("top backward", Icons.ARROW_BACKWARD, ButtonStyle.SECONDARY);
+        backwards.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                backward(event);
+            }
+        });
+
+        CustomButton fullForwards = new CustomButton("top fullForward", Icons.FAST_FORWARD, ButtonStyle.SECONDARY);
+        fullForwards.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                fullForward(event);
+            }
+        });
+
+        CustomButton forwards = new CustomButton("top forward", Icons.ARROW_FORWARD, ButtonStyle.SECONDARY);
+        forwards.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                forward(event);
+            }
+        });
+
+        CustomButton select = new CustomButton("top selectIndex", Icons.ASTERISK, ButtonStyle.SECONDARY);
+        select.addCallback(new ButtonCallback.Click() {
+            @Override
+            public void execute(ButtonInteractionEvent event) {
+                selectIndex(event);
+            }
+        });
 
         if (index == 0) {
             fullBackwards = fullBackwards.asDisabled();
             backwards = backwards.asDisabled();
-        }
-        else if (index == 9) {
+        } else if (index == 9) {
             fullForwards = fullForwards.asDisabled();
             forwards = forwards.asDisabled();
         }

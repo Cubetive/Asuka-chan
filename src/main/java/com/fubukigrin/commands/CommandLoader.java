@@ -47,7 +47,7 @@ public class CommandLoader {
         return false;
     }
 
-    public static void main() {
+    public static void load() {
         URLClassLoader cl;
         File file = new File("commands\\");
         try {

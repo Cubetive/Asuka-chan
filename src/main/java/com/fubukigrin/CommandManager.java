@@ -1,12 +1,12 @@
 package com.fubukigrin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.annotation.Nonnull;
 
 import com.fubukigrin.commands.BaseCommand;
-import com.fubukigrin.commands.CommandLoader;
 import com.fubukigrin.utilities.DotenvConfig;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -15,7 +15,8 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.restaction.CommandCreateAction;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 public class CommandManager extends ListenerAdapter {
     private static DotenvConfig dotenvConfig = new DotenvConfig();
@@ -41,26 +42,29 @@ public class CommandManager extends ListenerAdapter {
 
     public void onReady(@Nonnull ReadyEvent event) {
         System.out.println("CommandManager --- ready!");
-        CommandLoader.main();
     }
 
     @Override
     public void onGuildReady(@Nonnull GuildReadyEvent event) {
         System.out.println("Adding commands --- ready!");
 
-        CommandCreateAction cmd;
+        ArrayList<SlashCommandData> slashDataList = new ArrayList<SlashCommandData>();
         for (BaseCommand command : commandClass.values()) {
-            cmd = event.getJDA().upsertCommand(command.NameId, command.Description);
+            SlashCommandData slashCmdData = Commands.slash(command.NameId, command.Description);
+            System.out.println(command.NameId);
             if (command.Args != null) {
-                cmd.addOptions(command.Args);
+                slashCmdData.addOptions(command.Args);
             }
-            cmd.queue();
+
+            slashDataList.add(slashCmdData);
         }
+        event.getGuild().updateCommands().addCommands(slashDataList).queue();
     }
 
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         // Get name id of the command
+        event.deferReply().queue();
         String command = event.getName();
 
         try {

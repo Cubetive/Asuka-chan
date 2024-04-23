@@ -42,8 +42,6 @@ public class TopScores extends BaseCommand {
 
     @Override
     public void execute(@Nonnull SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
-
         String user = event.getOption("user").getAsString().replace("\"", "");
         MessageEmbed embed;
 

@@ -38,8 +38,6 @@ public class Osu extends BaseCommand {
 
     @SuppressWarnings("null")
     public void execute(@Nonnull SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
-
         String user = (event.getOption("user") != null) ? event.getOption("user").getAsString().replace("\"", "") : " ";
         MessageEmbed embed;
 

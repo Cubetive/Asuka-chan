@@ -15,7 +15,6 @@ public class Roll extends BaseCommand {
                 "roll",
                 "generic",
                 "Roll!",
-                "",
                 "");
     }
 

@@ -20,7 +20,6 @@ public class Boop extends BaseCommand {
                 "boop",
                 "generic",
                 "Boop!",
-                "",
                 "");
     }
 

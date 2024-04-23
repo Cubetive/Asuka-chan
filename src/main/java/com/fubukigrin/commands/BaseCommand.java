@@ -21,7 +21,6 @@ interface IBaseCommand {
 public abstract class BaseCommand implements IBaseCommand {
     public String NameId;
     public String CommandClass;
-    public String CommandCategory;
     public String Description;
     public ArrayList<OptionData> Args;
     public String[] AltNames;
@@ -32,10 +31,6 @@ public abstract class BaseCommand implements IBaseCommand {
 
     public void SetCommandClass(String command_class) {
         CommandClass = command_class;
-    }
-
-    public void SetCommandCategory(String category) {
-        CommandCategory = category;
     }
 
     public void SetDescription(String description) {
@@ -60,13 +55,11 @@ public abstract class BaseCommand implements IBaseCommand {
     public BaseCommand(
             String name_id,
             String command_class,
-            String category,
             String description,
             ArrayList<OptionData> args,
             String[] alt_names) {
         NameId = name_id;
         CommandClass = command_class;
-        CommandCategory = category;
         Description = description;
         Args = args;
         AltNames = alt_names;
@@ -75,13 +68,11 @@ public abstract class BaseCommand implements IBaseCommand {
     public BaseCommand(
             String name_id,
             String command_class,
-            String category,
             String description,
             OptionData[] args,
             String alt_names) {
         NameId = name_id;
         CommandClass = command_class;
-        CommandCategory = category;
         Description = description;
         Args = new ArrayList<OptionData>();
         AltNames = new String[] { alt_names };
@@ -90,12 +81,10 @@ public abstract class BaseCommand implements IBaseCommand {
     public BaseCommand(
             String name_id,
             String command_class,
-            String category,
             String description,
             String alt_names) {
         NameId = name_id;
         CommandClass = command_class;
-        CommandCategory = category;
         Description = description;
         Args = null;
         AltNames = new String[] { alt_names };

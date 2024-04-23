@@ -25,7 +25,6 @@ public class RecentScores extends BaseCommand {
                 "recentscores",
                 "osu",
                 "Get recent scores of a user",
-                "user",
                 "");
 
         AddArgs(OptionType.STRING, "user", "The user to get recent scores of", false);

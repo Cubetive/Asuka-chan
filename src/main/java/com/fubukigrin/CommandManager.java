@@ -24,8 +24,6 @@ public class CommandManager extends ListenerAdapter {
 
     // Get the Class of the command, where <name_id, command_class>
     private static HashMap<String, BaseCommand> commandClass = new HashMap<String, BaseCommand>();
-    // Get the category of the command, where <name_id, category>
-    private static HashMap<String, BaseCommand> commandCategory = new HashMap<String, BaseCommand>();
     // Get the main command name from altername command names, where <alt_name,
     // name_id>
     private static HashMap<String, BaseCommand> commandAlt = new HashMap<String, BaseCommand>();
@@ -36,7 +34,6 @@ public class CommandManager extends ListenerAdapter {
         }
 
         commandClass.put(command.NameId, command);
-        commandCategory.put(command.CommandCategory, command);
         for (String altName : command.AltNames) {
             commandAlt.put(altName, command);
         }

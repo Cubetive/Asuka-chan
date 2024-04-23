@@ -14,7 +14,6 @@ public class Ping extends BaseCommand {
                 "ping",
                 "generic",
                 "Ping!",
-                "",
                 "");
     }
 

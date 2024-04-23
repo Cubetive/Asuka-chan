@@ -35,7 +35,6 @@ public class TopScores extends BaseCommand {
                 "topscores",
                 "osu",
                 "Get top scores of a user",
-                "user",
                 "");
 
         AddArgs(OptionType.STRING, "user", "The user to get top scores of", false);

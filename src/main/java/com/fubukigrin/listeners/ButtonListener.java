@@ -16,6 +16,10 @@ public class ButtonListener extends ListenerAdapter {
         buttonMapping.put(id, button);
     }
 
+    public static void unregisterButton(String id) {
+        buttonMapping.remove(id);
+    }
+
     @Override
     public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
         String compId = event.getComponentId();

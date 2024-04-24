@@ -1,8 +1,5 @@
 package com.fubukigrin.commands.generic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nonnull;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -46,7 +43,7 @@ public class Boop extends BaseCommand {
                     m.disableAll();
                     event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
                 })
-                .setTimeoutTime(2);
+                .setTimeoutTime(5);
 
         event.getHook().sendMessage("Boop!")
                 .setActionRow(buttonManager.getList())

@@ -17,24 +17,22 @@ public class CustomButton extends ButtonImpl {
     private final ArrayList<ButtonCallback.Click> ButtonCallbackList = new ArrayList<ButtonCallback.Click>();
 
     public CustomButton(String id, String label, ButtonStyle style) {
-        super(id + "_" + System.currentTimeMillis(), label, style, false, null);
-        ButtonListener.registerButton(getId(), this);
+        this(id, label, style, null, false, null, -1);
     }
 
     public CustomButton(String id, String label, ButtonStyle style, boolean disabled, Emoji emoji) {
-        super(id + "_" + System.currentTimeMillis(), label, style, disabled, emoji);
-        ButtonListener.registerButton(getId(), this);
+        this(id, label, style, null, disabled, emoji, -1);
     }
 
     public CustomButton(String id, String label, ButtonStyle style, boolean disabled, Emoji emoji, long timeout) {
-        super(id + "_" + System.currentTimeMillis(), label, style, disabled, emoji);
-        ButtonListener.registerButton(getId(), this);
-        Timeout = timeout;
+        this(id, label, style, null, disabled, emoji, timeout);
     }
 
-    public CustomButton(String id, String label, ButtonStyle style, String url, boolean disabled, Emoji emoji) {
+    public CustomButton(String id, String label, ButtonStyle style, String url, boolean disabled, Emoji emoji,
+            long timeout) {
         super(id + "_" + System.currentTimeMillis(), label, style, url, disabled, emoji);
         ButtonListener.registerButton(getId(), this);
+        Timeout = timeout;
     }
 
     public CustomButton addCallback(ButtonCallback.Click callback) {

@@ -40,7 +40,7 @@ public class ButtonManager {
 
     public void startTimeout() {
         if (timeoutFuture != null) {
-            timeoutFuture.cancel(false);
+            timeoutFuture.cancel(true);
         }
 
         if (timeoutCallback != null && timeoutTime > 0) {

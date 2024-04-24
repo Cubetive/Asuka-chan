@@ -91,6 +91,12 @@ public class CommandManager extends ListenerAdapter {
             command = commandAlt.get(command_name);
         else
             command = commandClass.get(command_name);
+
+        if (command == null) {
+            return;
+        }
+
+        // Get arguments
         String[] args = (message.length >= 2) ? Arrays.copyOfRange(message, 1, message.length) : null;
 
         try {

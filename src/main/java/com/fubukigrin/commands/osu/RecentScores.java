@@ -27,7 +27,7 @@ public class RecentScores extends BaseCommand {
                 "Get recent scores of a user",
                 "");
 
-        AddArgs(OptionType.STRING, "user", "The user to get recent scores of", false);
+        addArgs(OptionType.STRING, "user", "The user to get recent scores of", false);
     }
 
     @Override

@@ -33,7 +33,7 @@ public class Osu extends BaseCommand {
                 "Get information about an osu! user",
                 "");
 
-        AddArgs(OptionType.STRING, "user", "The user to get information about", true);
+        addArgs(OptionType.STRING, "user", "The user to get information about", true);
     }
 
     @SuppressWarnings("null")

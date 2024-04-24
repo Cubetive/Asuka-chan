@@ -72,8 +72,9 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
-        // Get name id of the command
+        // defer as soon as we get the event
         event.deferReply().queue();
+
         String commandName = event.getName();
         BaseCommand command = getCommand(commandName);
         if (command == null)

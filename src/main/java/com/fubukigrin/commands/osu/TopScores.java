@@ -37,7 +37,7 @@ public class TopScores extends BaseCommand {
                 "Get top scores of a user",
                 "");
 
-        AddArgs(OptionType.STRING, "user", "The user to get top scores of", false);
+        addArgs(OptionType.STRING, "user", "The user to get top scores of", false);
     }
 
     @Override

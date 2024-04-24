@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
+import com.fubukigrin.listeners.ButtonListener;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ScheduledFuture;
 
@@ -44,7 +46,12 @@ public class ButtonManager {
         }
 
         if (timeoutCallback != null && timeoutTime > 0) {
-            timeoutFuture = jdaContext.getRateLimitPool().schedule(() -> timeoutCallback.execute(this), timeoutTime,
+            timeoutFuture = jdaContext.getRateLimitPool().schedule(() -> {
+                timeoutCallback.execute(this);
+                for (CustomButton button : buttonList) {
+                    ButtonListener.unregisterButton(button.getId());
+                }
+            }, timeoutTime,
                     TimeUnit.SECONDS);
         }
     }

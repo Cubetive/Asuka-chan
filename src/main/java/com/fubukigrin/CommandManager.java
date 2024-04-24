@@ -51,7 +51,6 @@ public class CommandManager extends ListenerAdapter {
         ArrayList<SlashCommandData> slashDataList = new ArrayList<SlashCommandData>();
         for (BaseCommand command : commandClass.values()) {
             SlashCommandData slashCmdData = Commands.slash(command.NameId, command.Description);
-            System.out.println(command.NameId);
             if (command.Args != null) {
                 slashCmdData.addOptions(command.Args);
             }

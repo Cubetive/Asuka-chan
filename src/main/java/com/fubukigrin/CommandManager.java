@@ -76,9 +76,8 @@ public class CommandManager extends ListenerAdapter {
         event.deferReply().queue();
         String commandName = event.getName();
         BaseCommand command = getCommand(commandName);
-        if (command == null) {
+        if (command == null)
             return;
-        }
 
         try {
             command.execute(event);
@@ -99,9 +98,8 @@ public class CommandManager extends ListenerAdapter {
         // Get name of the command and its arguments
         String commandName = message[0].substring(prefix.length()).toLowerCase();
         BaseCommand command = getCommand(commandName);
-        if (command == null) {
+        if (command == null)
             return;
-        }
 
         // Get arguments
         String[] args = (message.length >= 2) ? Arrays.copyOfRange(message, 1, message.length) : null;

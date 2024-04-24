@@ -39,7 +39,6 @@ public class Boop extends BaseCommand {
         ButtonManager buttonManager = buildButtons(0)
                 .setJda(event.getJDA())
                 .setTimeoutCallback((ButtonManager m) -> {
-                    System.out.println("Timeout!");
                     m.disableAll();
                     event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
                 })

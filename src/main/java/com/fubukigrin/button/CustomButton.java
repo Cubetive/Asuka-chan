@@ -50,7 +50,6 @@ public class CustomButton extends ButtonImpl {
     public void execute(ButtonInteractionEvent event) {
         for (ButtonCallback callback : ButtonCallbackList) {
             callback.execute(event);
-            System.out.println(getId() + " executed");
         }
 
         if (managerCtx != null) {

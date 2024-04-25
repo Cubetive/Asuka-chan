@@ -37,7 +37,7 @@ public class TopScores extends BaseCommand {
                 "Get top scores of a user",
                 "");
 
-        AddArgs(OptionType.STRING, "user", "The user to get top scores of", false);
+        addArgs(OptionType.STRING, "user", "The user to get top scores of", false);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class TopScores extends BaseCommand {
         // Button select = Button.secondary("top selectIndex", Icons.ASTERISK);
 
         CustomButton fullBackwards = new CustomButton("top fullBack", Icons.REWIND, ButtonStyle.SECONDARY);
-        fullBackwards.addCallback(new ButtonCallback.Click() {
+        fullBackwards.addCallback(new ButtonCallback() {
             @Override
             public void execute(ButtonInteractionEvent event) {
                 fullBack(event);
@@ -142,7 +142,7 @@ public class TopScores extends BaseCommand {
         });
 
         CustomButton backwards = new CustomButton("top backward", Icons.ARROW_BACKWARD, ButtonStyle.SECONDARY);
-        backwards.addCallback(new ButtonCallback.Click() {
+        backwards.addCallback(new ButtonCallback() {
             @Override
             public void execute(ButtonInteractionEvent event) {
                 backward(event);
@@ -150,7 +150,7 @@ public class TopScores extends BaseCommand {
         });
 
         CustomButton fullForwards = new CustomButton("top fullForward", Icons.FAST_FORWARD, ButtonStyle.SECONDARY);
-        fullForwards.addCallback(new ButtonCallback.Click() {
+        fullForwards.addCallback(new ButtonCallback() {
             @Override
             public void execute(ButtonInteractionEvent event) {
                 fullForward(event);
@@ -158,7 +158,7 @@ public class TopScores extends BaseCommand {
         });
 
         CustomButton forwards = new CustomButton("top forward", Icons.ARROW_FORWARD, ButtonStyle.SECONDARY);
-        forwards.addCallback(new ButtonCallback.Click() {
+        forwards.addCallback(new ButtonCallback() {
             @Override
             public void execute(ButtonInteractionEvent event) {
                 forward(event);
@@ -166,7 +166,7 @@ public class TopScores extends BaseCommand {
         });
 
         CustomButton select = new CustomButton("top selectIndex", Icons.ASTERISK, ButtonStyle.SECONDARY);
-        select.addCallback(new ButtonCallback.Click() {
+        select.addCallback(new ButtonCallback() {
             @Override
             public void execute(ButtonInteractionEvent event) {
                 selectIndex(event);

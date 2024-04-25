@@ -51,7 +51,6 @@ public class CommandManager extends ListenerAdapter {
         ArrayList<SlashCommandData> slashDataList = new ArrayList<SlashCommandData>();
         for (BaseCommand command : commandClass.values()) {
             SlashCommandData slashCmdData = Commands.slash(command.NameId, command.Description);
-            System.out.println(command.NameId);
             if (command.Args != null) {
                 slashCmdData.addOptions(command.Args);
             }
@@ -61,15 +60,28 @@ public class CommandManager extends ListenerAdapter {
         event.getGuild().updateCommands().addCommands(slashDataList).queue();
     }
 
+    public static BaseCommand getCommand(String commandName) {
+        BaseCommand command;
+        if (commandAlt.containsKey(commandName))
+            command = commandAlt.get(commandName);
+        else
+            command = commandClass.get(commandName);
+
+        return command;
+    }
+
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
-        // Get name id of the command
+        // defer as soon as we get the event
         event.deferReply().queue();
-        String command = event.getName();
+
+        String commandName = event.getName();
+        BaseCommand command = getCommand(commandName);
+        if (command == null)
+            return;
 
         try {
-            BaseCommand c = commandClass.get(command);
-            c.execute(event);
+            command.execute(event);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,13 +97,12 @@ public class CommandManager extends ListenerAdapter {
             return;
 
         // Get name of the command and its arguments
-        String command_name = message[0].substring(prefix.length()).toLowerCase();
-        BaseCommand command;
-        // If the command name is an alt, get the main command name
-        if (commandAlt.containsKey(command_name))
-            command = commandAlt.get(command_name);
-        else
-            command = commandClass.get(command_name);
+        String commandName = message[0].substring(prefix.length()).toLowerCase();
+        BaseCommand command = getCommand(commandName);
+        if (command == null)
+            return;
+
+        // Get arguments
         String[] args = (message.length >= 2) ? Arrays.copyOfRange(message, 1, message.length) : null;
 
         try {

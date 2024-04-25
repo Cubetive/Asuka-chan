@@ -25,28 +25,28 @@ public abstract class BaseCommand implements IBaseCommand {
     public ArrayList<OptionData> Args;
     public String[] AltNames;
 
-    public void SetNameId(String name_id) {
+    public void setNameId(String name_id) {
         NameId = name_id;
     }
 
-    public void SetCommandClass(String command_class) {
+    public void setCommandClass(String command_class) {
         CommandClass = command_class;
     }
 
-    public void SetDescription(String description) {
+    public void setDescription(String description) {
         Description = description;
     }
 
-    public void AddArgs(OptionData arg) {
+    public void addArg(OptionData arg) {
         if (Args == null) {
             Args = new ArrayList<OptionData>();
         }
         Args.add(arg);
     }
 
-    public void AddArgs(@Nonnull OptionType type, @Nonnull String name, @Nonnull String description,
+    public void addArgs(@Nonnull OptionType type, @Nonnull String name, @Nonnull String description,
             boolean isRequired) {
-        AddArgs(new OptionData(type, name, description, isRequired));
+        addArg(new OptionData(type, name, description, isRequired));
     }
 
     public BaseCommand() {

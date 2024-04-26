@@ -31,7 +31,7 @@ public class Osu extends BaseCommand {
                 "osu",
                 "osu",
                 "Get information about an osu! user",
-                "");
+                "profile");
 
         addArgs(OptionType.STRING, "user", "The user to get information about", true);
     }

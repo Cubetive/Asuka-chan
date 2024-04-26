@@ -90,4 +90,16 @@ public abstract class BaseCommand implements IBaseCommand {
         AltNames = new String[] { alt_names };
     }
 
+    public BaseCommand(
+            String name_id,
+            String command_class,
+            String description,
+            String[] alt_names) {
+        NameId = name_id;
+        CommandClass = command_class;
+        Description = description;
+        Args = null;
+        AltNames = alt_names;
+    }
+
 }

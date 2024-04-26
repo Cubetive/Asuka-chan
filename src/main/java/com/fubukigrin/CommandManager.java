@@ -91,9 +91,10 @@ public class CommandManager extends ListenerAdapter {
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         // Check if the command structure is valid
         String[] message = event.getMessage().getContentRaw().split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-        // If message does not contain prefix or the author isn't the user, immediately
-        // returns
-        if (!message[0].startsWith(prefix) || event.getAuthor().isBot() || event.getAuthor().isSystem())
+        // If message: does not contain prefix, or not coming from a guild, or the author isn't the user, 
+        // immediately returns
+        if (!message[0].startsWith(prefix) || event.getAuthor().isBot() 
+            || event.getAuthor().isSystem() || !event.isFromGuild())
             return;
 
         // Get name of the command and its arguments

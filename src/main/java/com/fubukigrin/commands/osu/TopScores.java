@@ -15,27 +15,32 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 import com.fubukigrin.button.ButtonCallback;
+import com.fubukigrin.button.ButtonManager;
 import com.fubukigrin.button.CustomButton;
 import com.fubukigrin.commands.BaseCommand;
 
 @SuppressWarnings("null")
 public class TopScores extends BaseCommand {
     // Message id, Scores cache
-    private HashMap<String, List<Score>> scoreCache = new HashMap<String, List<Score>>();
+    private static HashMap<Long, List<Score>> scoreCache = new HashMap<Long, List<Score>>();
     // Message id, index cache
-    private HashMap<String, Integer> indexCache = new HashMap<String, Integer>();
+    private static HashMap<Long, Integer> indexCache = new HashMap<Long, Integer>();
+    // Message id, userdata cache
+    private static HashMap<Long, UserData> userDataCache = new HashMap<Long, UserData>();
 
+    private static String[] altNames = {"top", "t"};
     TopScores() {
         super(
                 "topscores",
                 "osu",
                 "Get top scores of a user",
-                "");
+                altNames);
 
         addArgs(OptionType.STRING, "user", "The user to get top scores of", false);
     }
@@ -43,7 +48,6 @@ public class TopScores extends BaseCommand {
     @Override
     public void execute(@Nonnull SlashCommandInteractionEvent event) {
         String user = event.getOption("user").getAsString().replace("\"", "");
-        MessageEmbed embed;
 
         try {
             OsuAPI osuAPI = new OsuAPI();
@@ -57,19 +61,35 @@ public class TopScores extends BaseCommand {
             UserData userData = osuAPI.getUser(user);
             List<Score> scores = osuAPI.getTopScores(uid);
 
-            embed = buildEmbed(userData, scores).build();
+            MessageEmbed embed = buildEmbed(userData, scores, 0).build();
+            ButtonManager buttonManager = buildButtons(0).setJda(event.getJDA()) ;
+
+            event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed))
+                .setActionRow(buttonManager.getList())
+                .queue((message) -> {
+                    createCache(message.getIdLong(), 0, scores, userData);
+
+                    buttonManager.setTimeoutCallback((ButtonManager m) -> {
+                        m.disableAll();
+                        event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
+
+                        removeCache(message.getIdLong());
+                    })
+                    .setTimeoutTime(30);
+
+                    buttonManager.startTimeout();
+                });
         } catch (Exception e) {
             e.printStackTrace();
             InvalidCommandArgumentException ica = new InvalidCommandArgumentException(
                     String.format("User `%s` was not found", user));
-            embed = ica.getEmbed().build();
-        }
+            MessageEmbed embed = ica.getEmbed().build();
 
-        event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed))
-                .setActionRow(buildButtons(0))
-                .queue();
+            event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
+        }
     }
 
+    @Override
     public void execute(@Nonnull MessageReceivedEvent event, String[] args) {
         String user = null;
 
@@ -88,11 +108,26 @@ public class TopScores extends BaseCommand {
 
             UserData userData = osuAPI.getUser(user);
             List<Score> scores = osuAPI.getTopScores(uid);
+            
+            MessageEmbed embed = buildEmbed(userData, scores, 0).build();
+            ButtonManager buttonManager = buildButtons(0).setJda(event.getJDA());
 
-            MessageEmbed embed = buildEmbed(userData, scores).build();
             event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed))
-                    .setActionRow(buildButtons(0))
-                    .queue();
+                    .setActionRow(buttonManager.getList())
+                    .queue((message) -> {
+                        createCache(message.getIdLong(), 0, scores, userData);
+
+                        buttonManager.setTimeoutCallback((ButtonManager m) -> {
+                            m.disableAll();
+                            message.editMessageComponents(ActionRow.of(m.getList())).queue();
+
+                            removeCache(message.getIdLong());
+                        })
+                        .setTimeoutTime(30);
+
+                        buttonManager.startTimeout();
+                    });
+
         } catch (Exception e) {
             e.printStackTrace();
             String error = (user != null) ? String.format("User `%s` was not found", user)
@@ -104,7 +139,7 @@ public class TopScores extends BaseCommand {
         }
     }
 
-    public static EmbedBuilder buildEmbed(UserData userData, List<Score> scores) {
+    public static EmbedBuilder buildEmbed(UserData userData, List<Score> scores, int index) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(ColorTheme.DEFAULT);
 
@@ -120,11 +155,15 @@ public class TopScores extends BaseCommand {
 
         // Body
 
+        // Footer
+        String footer = String.format("On osu! Bancho | Page %s/10", index + 1);
+        eb.setFooter(footer);
+
         return eb;
     }
 
-    public static List<CustomButton> buildButtons(int index) {
-        List<CustomButton> buttons = new ArrayList<CustomButton>();
+    public static ButtonManager buildButtons(int index) {
+        ButtonManager buttons = new ButtonManager();
 
         // Button fullBackwards = Button.secondary("top fullBack", Icons.REWIND);
         // Button backwards = Button.secondary("top backward", Icons.ARROW_BACKWARD);
@@ -191,22 +230,58 @@ public class TopScores extends BaseCommand {
     }
 
     public static void fullBack(@Nonnull ButtonInteractionEvent event) {
-
+        indexCache.put(event.getMessageIdLong(), 0);
+        updateInteraction(event);
     }
 
     public static void fullForward(@Nonnull ButtonInteractionEvent event) {
-        System.out.println("full forward");
+        indexCache.put(event.getMessageIdLong(), 9);
+        updateInteraction(event);
     }
 
     public static void backward(@Nonnull ButtonInteractionEvent event) {
-        System.out.println("backward");
+        indexCache.put(event.getMessageIdLong(), indexCache.get(event.getMessageIdLong()) - 1);
+        updateInteraction(event);
     }
 
     public static void forward(@Nonnull ButtonInteractionEvent event) {
-        System.out.println("forward");
+        indexCache.put(event.getMessageIdLong(), indexCache.get(event.getMessageIdLong()) + 1);
+        updateInteraction(event);
     }
 
     public static void selectIndex(@Nonnull ButtonInteractionEvent event) {
-        System.out.println("select index");
+        
+    }
+
+    private static void updateInteraction(@Nonnull ButtonInteractionEvent event) {
+        long messageId = event.getMessageIdLong();
+
+        MessageEmbed embed = buildEmbed(userDataCache.get(messageId), scoreCache.get(messageId), indexCache.get(messageId)).build();
+        ButtonManager buttonManager = buildButtons(indexCache.get(messageId))
+                                    .setJda(event.getJDA())
+                                    .setTimeoutCallback((ButtonManager m) -> {
+                                        m.disableAll();
+                                        event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
+            
+                                        removeCache(messageId);
+                                    })
+                                    .setTimeoutTime(30);
+
+        event.editMessageEmbeds(embed)
+                .setActionRow(buttonManager.getList())
+                .queue();
+        buttonManager.startTimeout();
+    }
+
+    private static void createCache(long id, int index, List<Score> scores, UserData userData) {
+        scoreCache.put(id, scores);
+        indexCache.put(id, 0);
+        userDataCache.put(id, userData);
+    }
+
+    private static void removeCache(long id) {
+        scoreCache.remove(id);
+        indexCache.remove(id);
+        userDataCache.remove(id);
     }
 }

@@ -8,14 +8,17 @@ import java.util.Random;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 public class Roll extends BaseCommand {
     Roll() {
         super(
                 "roll",
                 "generic",
-                "Roll!",
+                "Roll a number between 1 and the specified limit, if applicable. The default limit is 100",
                 "");
+        
+        addArgs(OptionType.INTEGER, "limit", "The specified limit", false);
     }
 
     @SuppressWarnings("null")

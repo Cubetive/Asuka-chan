@@ -93,6 +93,7 @@ public class ButtonManager {
     public void disableAll() {
         ArrayList<CustomButton> buttonListUpdate = new ArrayList<CustomButton>();
         for (CustomButton button : buttonList) {
+            ButtonListener.unregisterButton(button.getId());
             buttonListUpdate.add(button.asDisabled());
         }
 

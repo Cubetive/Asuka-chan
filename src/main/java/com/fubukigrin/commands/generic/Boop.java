@@ -52,9 +52,19 @@ public class Boop extends BaseCommand {
     }
 
     public void execute(@Nonnull MessageReceivedEvent event, String[] args) {
-        String message = event.getAuthor().getAsMention() + " Boop";
-        event.getChannel().sendMessage(message)
-                .setActionRow(buildButtons(0).setJda(event.getJDA()).getList())
-                .queue();
+        String content = event.getAuthor().getAsMention() + " Boop";
+        ButtonManager buttonManager = buildButtons(0).setJda(event.getJDA());
+
+        event.getChannel().sendMessage(content)
+                .setActionRow(buttonManager.getList())
+                .queue((message) -> {
+                    buttonManager.setTimeoutCallback((ButtonManager m) -> {
+                        m.disableAll();
+                        message.editMessageComponents(ActionRow.of(m.getList())).queue();
+                    })
+                    .setTimeoutTime(5);
+
+                    buttonManager.startTimeout();
+                });
     }
 }

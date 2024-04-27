@@ -105,8 +105,14 @@ public class Osu extends BaseCommand {
         Collections.swap(grades, 0, 1); // Swap XH and X
         Collections.swap(grades, 2, 3); // Swap SH and S
 
-        String rankBuilder = String.format("**▸ Ranks:** %s`pl`%s`pl`%s`pl`%s`pl`%s`pl`%n", OsuGrades.XH, OsuGrades.X,
-                OsuGrades.SH, OsuGrades.S, OsuGrades.A);
+        String rankBuilder = String.format("**▸ Ranks:** %s`pl`%s`pl`%s`pl`%s`pl`%s`pl`%n", 
+            OsuGrades.XH.toString(), 
+            OsuGrades.X.toString(),
+            OsuGrades.SH.toString(), 
+            OsuGrades.S.toString(),
+            OsuGrades.A.toString()
+        );
+
         rankBuilder = rankBuilder.replace("pl", "%,d"); // Replacing placeholder with integer format
 
         StringBuffer body = new StringBuffer();

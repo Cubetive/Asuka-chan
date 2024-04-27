@@ -11,12 +11,23 @@ public class ConvertDateTime {
         return parseTime.getEpochSecond();
     }
 
+    public static long getEpochSecondInstantFormat(String timestamp) {
+        DateTimeFormatter osuFormat = DateTimeFormatter.ISO_INSTANT;
+        Instant parseTime = Instant.from(osuFormat.parse(timestamp));
+        return parseTime.getEpochSecond();
+    }
+
     public static String toShortDateDiscordTimestamp(String timestamp) {
         return String.format("<t:%d:d>", getEpochSecond(timestamp));
     }
 
     public static String toRelativeDiscordTimestamp(String timestamp) {
         return String.format("<t:%d:R>", getEpochSecond(timestamp));
+    }
+
+    // Score "created_at" converter
+    public static String toRelativeDiscordTimestampInstantFormat(String timestamp) {
+        return String.format("<t:%d:R>", getEpochSecondInstantFormat(timestamp));
     }
 
     public static String toShortDate(String timestamp) {

@@ -33,6 +33,7 @@ public class UserData {
     public JsonNode achievements;
     public JsonNode badges;
 
+    @SuppressWarnings("deprecation")
     public UserData(JsonNode jsonNode) throws Exception {
         username = jsonNode.get("username").asText();
         id = jsonNode.get("id").asInt();

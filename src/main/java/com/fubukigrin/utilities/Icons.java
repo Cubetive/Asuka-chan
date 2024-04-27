@@ -8,4 +8,6 @@ public class Icons {
     public static final String ARROW_FORWARD = "▶";
 
     public static final String ASTERISK = "*";
+
+    public static final String MISS = "<:miss:1233613259047698514>";
 }

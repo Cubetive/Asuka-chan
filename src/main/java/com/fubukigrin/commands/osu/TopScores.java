@@ -5,7 +5,9 @@ import javax.annotation.Nonnull;
 
 import com.fubukigrin.commands.InvalidCommandArgumentException;
 import com.fubukigrin.utilities.ColorTheme;
+import com.fubukigrin.utilities.ConvertDateTime;
 import com.fubukigrin.utilities.Icons;
+import com.fubukigrin.utilities.OsuGrades;
 import com.osu.OsuAPI;
 import com.osu.Score;
 import com.osu.UserData;
@@ -62,23 +64,29 @@ public class TopScores extends BaseCommand {
             List<Score> scores = osuAPI.getTopScores(uid);
 
             MessageEmbed embed = buildEmbed(userData, scores, 0).build();
-            ButtonManager buttonManager = buildButtons(0).setJda(event.getJDA()) ;
+            ButtonManager buttonManager = buildButtons(0, scores).setJda(event.getJDA());
+            
+            if (scores.size() / 11 > 0) {
+                event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed))
+                    .setActionRow(buttonManager.getList())
+                    .queue((message) -> {
+                        createCache(message.getIdLong(), 0, scores, userData);
 
-            event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed))
-                .setActionRow(buttonManager.getList())
-                .queue((message) -> {
-                    createCache(message.getIdLong(), 0, scores, userData);
+                        buttonManager.setTimeoutCallback((ButtonManager m) -> {
+                            m.disableAll();
+                            event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
 
-                    buttonManager.setTimeoutCallback((ButtonManager m) -> {
-                        m.disableAll();
-                        event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
+                            removeCache(message.getIdLong());
+                        })
+                        .setTimeoutTime(30);
 
-                        removeCache(message.getIdLong());
-                    })
-                    .setTimeoutTime(30);
-
-                    buttonManager.startTimeout();
-                });
+                        buttonManager.startTimeout();
+                    });
+            } 
+            else {
+                // If there are less than 11 scores, only display the first page
+                event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             InvalidCommandArgumentException ica = new InvalidCommandArgumentException(
@@ -110,9 +118,10 @@ public class TopScores extends BaseCommand {
             List<Score> scores = osuAPI.getTopScores(uid);
             
             MessageEmbed embed = buildEmbed(userData, scores, 0).build();
-            ButtonManager buttonManager = buildButtons(0).setJda(event.getJDA());
+            ButtonManager buttonManager = buildButtons(0, scores).setJda(event.getJDA());
 
-            event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed))
+            if (scores.size() / 11 > 0) {
+                event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed))
                     .setActionRow(buttonManager.getList())
                     .queue((message) -> {
                         createCache(message.getIdLong(), 0, scores, userData);
@@ -127,6 +136,11 @@ public class TopScores extends BaseCommand {
 
                         buttonManager.startTimeout();
                     });
+            }
+            else {
+                // If there are less than 11 scores, only display the first page
+                event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,15 +168,44 @@ public class TopScores extends BaseCommand {
         eb.setThumbnail(userData.avatarUrl.toString());
 
         // Body
+        StringBuffer body = new StringBuffer();
+        int modulo = (scores.size() % 10 == 0 && scores.size() > 0) ? 10 : scores.size() % 10;
+
+        // Appending scores
+        for (int i = 0; i < modulo; i++) {
+            Score score = scores.get(index * 10 + i);
+
+            int placement = index * 10 + i + 1;
+            String songTitle = score.beatmapset.get("title").asText();
+            String mapDifficulty = score.beatmap.get("version").asText();
+            String mapTitle = String.format("%s [%s]", songTitle, mapDifficulty);
+            String mapLink = score.beatmap.get("url").asText();
+            String modCombo = score.getModCombo();
+            double starRating = score.beatmap.get("difficulty_rating").asDouble();
+
+            String grade = OsuGrades.valueOf(score.grade).toString();
+            double accuracy = score.accuracy * 100.0;
+            String miss = (score.missCount > 0) ? String.format("%d%s", score.missCount, Icons.MISS) : "";
+            String relativeDate = ConvertDateTime.toRelativeDiscordTimestampInstantFormat(score.timeSet);
+            
+            body.append(String.format("**#%d** **[%s](%s)** **+%s** [%.2f★]%n", placement, mapTitle, mapLink, modCombo, starRating))
+                .append(String.format("%s **%,.2fpp** (%.2f%s) [**%sx**] %s %s%n", 
+                        grade, score.pp, accuracy, "%", 
+                        score.maxCombo, miss, relativeDate
+                ));
+        }
+
+        eb.setDescription(body);
 
         // Footer
-        String footer = String.format("On osu! Bancho | Page %s/10", index + 1);
+        int maxIndex = calculateMaxPageIndex(scores) + 1;
+        String footer = String.format("On osu! Bancho | Page %s/%s", index + 1, maxIndex);
         eb.setFooter(footer);
 
         return eb;
     }
 
-    public static ButtonManager buildButtons(int index) {
+    public static ButtonManager buildButtons(int index, List<Score> scores) {
         ButtonManager buttons = new ButtonManager();
 
         // Button fullBackwards = Button.secondary("top fullBack", Icons.REWIND);
@@ -212,10 +255,14 @@ public class TopScores extends BaseCommand {
             }
         });
 
+        // Determine the number of pages a score could have, this code only applies to
+        // users who have more than ten scores in their top
+        int maxIndex = calculateMaxPageIndex(scores);
+
         if (index == 0) {
             fullBackwards = fullBackwards.asDisabled();
             backwards = backwards.asDisabled();
-        } else if (index == 9) {
+        } else if (index == maxIndex) {
             fullForwards = fullForwards.asDisabled();
             forwards = forwards.asDisabled();
         }
@@ -235,7 +282,8 @@ public class TopScores extends BaseCommand {
     }
 
     public static void fullForward(@Nonnull ButtonInteractionEvent event) {
-        indexCache.put(event.getMessageIdLong(), 9);
+        int maxIndex = calculateMaxPageIndex(scoreCache.get(event.getMessageIdLong()));
+        indexCache.put(event.getMessageIdLong(), maxIndex);
         updateInteraction(event);
     }
 
@@ -257,7 +305,7 @@ public class TopScores extends BaseCommand {
         long messageId = event.getMessageIdLong();
 
         MessageEmbed embed = buildEmbed(userDataCache.get(messageId), scoreCache.get(messageId), indexCache.get(messageId)).build();
-        ButtonManager buttonManager = buildButtons(indexCache.get(messageId))
+        ButtonManager buttonManager = buildButtons(indexCache.get(messageId), scoreCache.get(messageId))
                                     .setJda(event.getJDA())
                                     .setTimeoutCallback((ButtonManager m) -> {
                                         m.disableAll();
@@ -283,5 +331,10 @@ public class TopScores extends BaseCommand {
         scoreCache.remove(id);
         indexCache.remove(id);
         userDataCache.remove(id);
+    }
+
+    private static int calculateMaxPageIndex(List<Score> scores) {
+        int modulo = (scores.size() % 10 == 0) ? 10 : scores.size() % 10;
+        return (scores.size() - modulo) / 10;
     }
 }

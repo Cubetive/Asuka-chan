@@ -3,6 +3,7 @@ package com.osu;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class Beatmap {
+    public int id;
     public String status;
 
     public double sr;
@@ -12,6 +13,7 @@ public class Beatmap {
     public double bpm;
     public String version;
 
+    public int maxCombo;
     public int circles;
     public int sliders;
     public int spinners;
@@ -21,6 +23,7 @@ public class Beatmap {
     public String creator;
 
     public Beatmap(JsonNode jsonNode) {
+        id = jsonNode.get("id").asInt();
         status = jsonNode.get("status").asText();
 
         sr = jsonNode.get("difficulty_rating").asDouble();
@@ -30,6 +33,7 @@ public class Beatmap {
         bpm = jsonNode.get("bpm").asDouble();
         version = jsonNode.get("version").asText();
 
+        maxCombo = jsonNode.get("max_combo").asInt();
         circles = jsonNode.get("count_circles").asInt();
         sliders = jsonNode.get("count_sliders").asInt();
         spinners = jsonNode.get("count_spinners").asInt();

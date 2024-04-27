@@ -30,7 +30,7 @@ public class CustomButton extends ButtonImpl {
 
     public CustomButton(String id, String label, ButtonStyle style, String url, boolean disabled, Emoji emoji) {
         super(id + "_" + System.currentTimeMillis(), label, style, url, disabled, emoji);
-        ButtonListener.registerButton(getId(), this);
+        ButtonListener.registerButton(this);
     }
 
     public CustomButton(CustomButton button, boolean disabled, ButtonManager manager) {
@@ -49,7 +49,7 @@ public class CustomButton extends ButtonImpl {
 
     public void execute(ButtonInteractionEvent event) {
         for (ButtonCallback callback : ButtonCallbackList) {
-            callback.execute(event);
+            callback.execute(event, managerCtx);
         }
 
         if (managerCtx != null) {

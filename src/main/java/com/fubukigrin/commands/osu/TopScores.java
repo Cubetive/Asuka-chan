@@ -20,7 +20,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
@@ -74,9 +73,7 @@ public class TopScores extends BaseCommand {
                             createCache(message.getIdLong(), 0, scores, userData);
 
                             buttonManager.setTimeoutCallback((ButtonManager m) -> {
-                                m.disableAll();
-                                event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
-
+                                m.disableAll(event.getHook());
                                 removeCache(message.getIdLong());
                             })
                                     .setTimeoutTime(30);
@@ -127,9 +124,7 @@ public class TopScores extends BaseCommand {
                             createCache(message.getIdLong(), 0, scores, userData);
 
                             buttonManager.setTimeoutCallback((ButtonManager m) -> {
-                                m.disableAll();
-                                message.editMessageComponents(ActionRow.of(m.getList())).queue();
-
+                                m.disableAll(message);
                                 removeCache(message.getIdLong());
                             })
                                     .setTimeoutTime(30);
@@ -217,7 +212,7 @@ public class TopScores extends BaseCommand {
         CustomButton fullBackwards = new CustomButton("top fullBack", Icons.REWIND, ButtonStyle.SECONDARY);
         fullBackwards.addCallback(new ButtonCallback() {
             @Override
-            public void execute(ButtonInteractionEvent event) {
+            public void execute(ButtonInteractionEvent event, ButtonManager manager) {
                 fullBack(event);
             }
         });
@@ -225,7 +220,7 @@ public class TopScores extends BaseCommand {
         CustomButton backwards = new CustomButton("top backward", Icons.ARROW_BACKWARD, ButtonStyle.SECONDARY);
         backwards.addCallback(new ButtonCallback() {
             @Override
-            public void execute(ButtonInteractionEvent event) {
+            public void execute(ButtonInteractionEvent event, ButtonManager manager) {
                 backward(event);
             }
         });
@@ -233,7 +228,7 @@ public class TopScores extends BaseCommand {
         CustomButton fullForwards = new CustomButton("top fullForward", Icons.FAST_FORWARD, ButtonStyle.SECONDARY);
         fullForwards.addCallback(new ButtonCallback() {
             @Override
-            public void execute(ButtonInteractionEvent event) {
+            public void execute(ButtonInteractionEvent event, ButtonManager manager) {
                 fullForward(event);
             }
         });
@@ -241,7 +236,7 @@ public class TopScores extends BaseCommand {
         CustomButton forwards = new CustomButton("top forward", Icons.ARROW_FORWARD, ButtonStyle.SECONDARY);
         forwards.addCallback(new ButtonCallback() {
             @Override
-            public void execute(ButtonInteractionEvent event) {
+            public void execute(ButtonInteractionEvent event, ButtonManager manager) {
                 forward(event);
             }
         });
@@ -249,7 +244,7 @@ public class TopScores extends BaseCommand {
         CustomButton select = new CustomButton("top selectIndex", Icons.ASTERISK, ButtonStyle.SECONDARY);
         select.addCallback(new ButtonCallback() {
             @Override
-            public void execute(ButtonInteractionEvent event) {
+            public void execute(ButtonInteractionEvent event, ButtonManager manager) {
                 selectIndex(event);
             }
         });
@@ -308,9 +303,7 @@ public class TopScores extends BaseCommand {
         ButtonManager buttonManager = buildButtons(indexCache.get(messageId), scoreCache.get(messageId))
                 .setJda(event.getJDA())
                 .setTimeoutCallback((ButtonManager m) -> {
-                    m.disableAll();
-                    event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
-
+                    m.disableAll(event.getHook());
                     removeCache(messageId);
                 })
                 .setTimeoutTime(30);

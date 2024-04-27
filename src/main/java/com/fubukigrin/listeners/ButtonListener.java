@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class ButtonListener extends ListenerAdapter {
     private static HashMap<String, CustomButton> buttonMapping = new HashMap<String, CustomButton>();
 
-    public static void registerButton(String id, CustomButton button) {
-        buttonMapping.put(id, button);
+    public static void registerButton(CustomButton button) {
+        buttonMapping.put(button.getId(), button);
     }
 
     public static void unregisterButton(String id) {
@@ -22,6 +22,7 @@ public class ButtonListener extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
+        event.deferEdit().queue();
         String compId = event.getComponentId();
         if (buttonMapping.containsKey(compId)) {
             try {

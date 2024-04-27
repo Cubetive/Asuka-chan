@@ -1,4 +1,4 @@
-package com.fubukigrin.button;
+package com.fubukigrin.components.button;
 
 import java.util.ArrayList;
 

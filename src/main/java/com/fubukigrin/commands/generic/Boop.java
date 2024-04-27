@@ -9,8 +9,8 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 
 import com.fubukigrin.commands.BaseCommand;
-import com.fubukigrin.button.ButtonManager;
-import com.fubukigrin.button.CustomButton;
+import com.fubukigrin.components.button.ButtonManager;
+import com.fubukigrin.components.button.CustomButton;
 
 public class Boop extends BaseCommand {
 
@@ -62,7 +62,7 @@ public class Boop extends BaseCommand {
                         m.disableAll();
                         message.editMessageComponents(ActionRow.of(m.getList())).queue();
                     })
-                    .setTimeoutTime(5);
+                            .setTimeoutTime(5);
 
                     buttonManager.startTimeout();
                 });

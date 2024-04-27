@@ -4,6 +4,9 @@ import java.util.*;
 import javax.annotation.Nonnull;
 
 import com.fubukigrin.commands.InvalidCommandArgumentException;
+import com.fubukigrin.components.button.ButtonCallback;
+import com.fubukigrin.components.button.ButtonManager;
+import com.fubukigrin.components.button.CustomButton;
 import com.fubukigrin.utilities.ColorTheme;
 import com.fubukigrin.utilities.ConvertDateTime;
 import com.fubukigrin.utilities.Icons;
@@ -22,9 +25,6 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
-import com.fubukigrin.button.ButtonCallback;
-import com.fubukigrin.button.ButtonManager;
-import com.fubukigrin.button.CustomButton;
 import com.fubukigrin.commands.BaseCommand;
 
 @SuppressWarnings("null")
@@ -36,7 +36,8 @@ public class TopScores extends BaseCommand {
     // Message id, userdata cache
     private static HashMap<Long, UserData> userDataCache = new HashMap<Long, UserData>();
 
-    private static String[] altNames = {"top", "t"};
+    private static String[] altNames = { "top", "t" };
+
     TopScores() {
         super(
                 "topscores",
@@ -65,25 +66,24 @@ public class TopScores extends BaseCommand {
 
             MessageEmbed embed = buildEmbed(userData, scores, 0).build();
             ButtonManager buttonManager = buildButtons(0, scores).setJda(event.getJDA());
-            
+
             if (scores.size() / 11 > 0) {
                 event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed))
-                    .setActionRow(buttonManager.getList())
-                    .queue((message) -> {
-                        createCache(message.getIdLong(), 0, scores, userData);
+                        .setActionRow(buttonManager.getList())
+                        .queue((message) -> {
+                            createCache(message.getIdLong(), 0, scores, userData);
 
-                        buttonManager.setTimeoutCallback((ButtonManager m) -> {
-                            m.disableAll();
-                            event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
+                            buttonManager.setTimeoutCallback((ButtonManager m) -> {
+                                m.disableAll();
+                                event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
 
-                            removeCache(message.getIdLong());
-                        })
-                        .setTimeoutTime(30);
+                                removeCache(message.getIdLong());
+                            })
+                                    .setTimeoutTime(30);
 
-                        buttonManager.startTimeout();
-                    });
-            } 
-            else {
+                            buttonManager.startTimeout();
+                        });
+            } else {
                 // If there are less than 11 scores, only display the first page
                 event.getHook().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
             }
@@ -116,28 +116,27 @@ public class TopScores extends BaseCommand {
 
             UserData userData = osuAPI.getUser(user);
             List<Score> scores = osuAPI.getTopScores(uid);
-            
+
             MessageEmbed embed = buildEmbed(userData, scores, 0).build();
             ButtonManager buttonManager = buildButtons(0, scores).setJda(event.getJDA());
 
             if (scores.size() / 11 > 0) {
                 event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed))
-                    .setActionRow(buttonManager.getList())
-                    .queue((message) -> {
-                        createCache(message.getIdLong(), 0, scores, userData);
+                        .setActionRow(buttonManager.getList())
+                        .queue((message) -> {
+                            createCache(message.getIdLong(), 0, scores, userData);
 
-                        buttonManager.setTimeoutCallback((ButtonManager m) -> {
-                            m.disableAll();
-                            message.editMessageComponents(ActionRow.of(m.getList())).queue();
+                            buttonManager.setTimeoutCallback((ButtonManager m) -> {
+                                m.disableAll();
+                                message.editMessageComponents(ActionRow.of(m.getList())).queue();
 
-                            removeCache(message.getIdLong());
-                        })
-                        .setTimeoutTime(30);
+                                removeCache(message.getIdLong());
+                            })
+                                    .setTimeoutTime(30);
 
-                        buttonManager.startTimeout();
-                    });
-            }
-            else {
+                            buttonManager.startTimeout();
+                        });
+            } else {
                 // If there are less than 11 scores, only display the first page
                 event.getChannel().sendMessage(MessageCreateData.fromEmbeds(embed)).queue();
             }
@@ -187,12 +186,12 @@ public class TopScores extends BaseCommand {
             double accuracy = score.accuracy * 100.0;
             String miss = (score.missCount > 0) ? String.format("%d%s", score.missCount, Icons.MISS) : "";
             String relativeDate = ConvertDateTime.toRelativeDiscordTimestampInstantFormat(score.timeSet);
-            
-            body.append(String.format("**#%d** **[%s](%s)** **+%s** [%.2f★]%n", placement, mapTitle, mapLink, modCombo, starRating))
-                .append(String.format("%s **%,.2fpp** (%.2f%s) [**%sx**] %s %s%n", 
-                        grade, score.pp, accuracy, "%", 
-                        score.maxCombo, miss, relativeDate
-                ));
+
+            body.append(String.format("**#%d** **[%s](%s)** **+%s** [%.2f★]%n", placement, mapTitle, mapLink, modCombo,
+                    starRating))
+                    .append(String.format("%s **%,.2fpp** (%.2f%s) [**%sx**] %s %s%n",
+                            grade, score.pp, accuracy, "%",
+                            score.maxCombo, miss, relativeDate));
         }
 
         eb.setDescription(body);
@@ -298,22 +297,23 @@ public class TopScores extends BaseCommand {
     }
 
     public static void selectIndex(@Nonnull ButtonInteractionEvent event) {
-        
+
     }
 
     private static void updateInteraction(@Nonnull ButtonInteractionEvent event) {
         long messageId = event.getMessageIdLong();
 
-        MessageEmbed embed = buildEmbed(userDataCache.get(messageId), scoreCache.get(messageId), indexCache.get(messageId)).build();
+        MessageEmbed embed = buildEmbed(userDataCache.get(messageId), scoreCache.get(messageId),
+                indexCache.get(messageId)).build();
         ButtonManager buttonManager = buildButtons(indexCache.get(messageId), scoreCache.get(messageId))
-                                    .setJda(event.getJDA())
-                                    .setTimeoutCallback((ButtonManager m) -> {
-                                        m.disableAll();
-                                        event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
-            
-                                        removeCache(messageId);
-                                    })
-                                    .setTimeoutTime(30);
+                .setJda(event.getJDA())
+                .setTimeoutCallback((ButtonManager m) -> {
+                    m.disableAll();
+                    event.getHook().editOriginalComponents(ActionRow.of(m.getList())).queue();
+
+                    removeCache(messageId);
+                })
+                .setTimeoutTime(30);
 
         event.editMessageEmbeds(embed)
                 .setActionRow(buttonManager.getList())

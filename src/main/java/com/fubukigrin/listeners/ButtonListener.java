@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import javax.annotation.Nonnull;
 
-import com.fubukigrin.button.CustomButton;
+import com.fubukigrin.components.button.CustomButton;
 
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

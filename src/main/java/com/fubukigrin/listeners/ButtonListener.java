@@ -22,7 +22,6 @@ public class ButtonListener extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
-        event.deferEdit().queue();
         String compId = event.getComponentId();
         if (buttonMapping.containsKey(compId)) {
             try {

@@ -25,6 +25,7 @@ public class ModalListener extends ListenerAdapter {
     public void onModalInteraction(@Nonnull ModalInteractionEvent event) {
         event.deferReply().queue();
         String modalId = event.getModalId();
+
         if (modalMapping.containsKey(modalId)) {
             try {
                 modalMapping.get(modalId).execute(event);

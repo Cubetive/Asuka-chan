@@ -23,6 +23,7 @@ public class ModalListener extends ListenerAdapter {
 
     @Override
     public void onModalInteraction(@Nonnull ModalInteractionEvent event) {
+        // reply on default? maybe change
         event.deferReply().queue();
         String modalId = event.getModalId();
 

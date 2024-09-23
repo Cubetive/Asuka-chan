@@ -17,7 +17,6 @@ public class Roll extends BaseCommand {
                 "generic",
                 "Roll a number between 1 and the specified limit, if applicable. The default limit is 100",
                 "");
-        
         addArgs(OptionType.INTEGER, "limit", "The specified limit", false);
     }
 

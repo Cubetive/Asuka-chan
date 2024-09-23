@@ -42,7 +42,7 @@ public class Osu extends BaseCommand {
         MessageEmbed embed;
 
         try {
-            OsuAPI osuAPI = new OsuAPI();
+            OsuAPI osuAPI = OsuAPI.getInstance();
             UserData userData = osuAPI.getUser(user);
 
             embed = buildEmbed(userData).build();
@@ -64,7 +64,7 @@ public class Osu extends BaseCommand {
                 throw new Exception();
 
             user = args[0].replace("\"", "");
-            OsuAPI osuAPI = new OsuAPI();
+            OsuAPI osuAPI = OsuAPI.getInstance();
             UserData userData = osuAPI.getUser(user);
 
             MessageEmbed embed = buildEmbed(userData).build();
@@ -105,13 +105,12 @@ public class Osu extends BaseCommand {
         Collections.swap(grades, 0, 1); // Swap XH and X
         Collections.swap(grades, 2, 3); // Swap SH and S
 
-        String rankBuilder = String.format("**▸ Ranks:** %s`pl`%s`pl`%s`pl`%s`pl`%s`pl`%n", 
-            OsuGrades.XH.toString(), 
-            OsuGrades.X.toString(),
-            OsuGrades.SH.toString(), 
-            OsuGrades.S.toString(),
-            OsuGrades.A.toString()
-        );
+        String rankBuilder = String.format("**▸ Ranks:** %s`pl`%s`pl`%s`pl`%s`pl`%s`pl`%n",
+                OsuGrades.XH.toString(),
+                OsuGrades.X.toString(),
+                OsuGrades.SH.toString(),
+                OsuGrades.S.toString(),
+                OsuGrades.A.toString());
 
         rankBuilder = rankBuilder.replace("pl", "%,d"); // Replacing placeholder with integer format
 

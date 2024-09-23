@@ -32,13 +32,13 @@ public class RecentScores extends BaseCommand {
 
     @Override
     public void execute(@Nonnull SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
+        // event.deferReply().queue();
 
         String user = event.getOption("user").getAsString().replace("\"", "");
         MessageEmbed embed;
 
         try {
-            OsuAPI osuAPI = new OsuAPI();
+            OsuAPI osuAPI = OsuAPI.getInstance();
             int uid = 0;
             if (user != "")
                 uid = osuAPI.getUser(user).id;
@@ -69,7 +69,7 @@ public class RecentScores extends BaseCommand {
                 throw new Exception();
 
             user = args[0].replace("\"", "");
-            OsuAPI osuAPI = new OsuAPI();
+            OsuAPI osuAPI = OsuAPI.getInstance();
             int uid = 0;
             if (user != null)
                 uid = osuAPI.getUser(user).id;

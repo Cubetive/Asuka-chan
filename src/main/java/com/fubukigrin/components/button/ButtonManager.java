@@ -1,4 +1,4 @@
-package com.fubukigrin.button;
+package com.fubukigrin.components.button;
 
 import java.util.ArrayList;
 
@@ -10,6 +10,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ScheduledFuture;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 
 public class ButtonManager {
 
@@ -51,8 +54,7 @@ public class ButtonManager {
                 for (CustomButton button : buttonList) {
                     ButtonListener.unregisterButton(button.getId());
                 }
-            }, timeoutTime,
-                    TimeUnit.SECONDS);
+            }, timeoutTime, TimeUnit.SECONDS);
         }
     }
 
@@ -98,5 +100,32 @@ public class ButtonManager {
         }
 
         update(buttonListUpdate);
+    }
+
+    public void disableAll(InteractionHook hook) {
+        disableAll();
+        hook.editOriginalComponents(ActionRow.of(getList())).queue();
+    }
+
+    public void disableAll(Message message) {
+        disableAll();
+        message.editMessageComponents(ActionRow.of(getList())).queue();
+    }
+
+    public void removeAll() {
+        for (CustomButton button : buttonList) {
+            ButtonListener.unregisterButton(button.getId());
+        }
+        update(new ArrayList<CustomButton>());
+    }
+
+    public void removeAll(InteractionHook hook) {
+        removeAll();
+        hook.editMessageComponentsById("@original").queue();
+    }
+
+    public void removeAll(Message message) {
+        removeAll();
+        message.editMessageComponents(ActionRow.of(getList())).queue();
     }
 }

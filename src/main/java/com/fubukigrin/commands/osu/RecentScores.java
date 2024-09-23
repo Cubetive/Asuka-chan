@@ -38,7 +38,7 @@ public class RecentScores extends BaseCommand {
         MessageEmbed embed;
 
         try {
-            OsuAPI osuAPI = new OsuAPI();
+            OsuAPI osuAPI = OsuAPI.getInstance();
             int uid = 0;
             if (user != "")
                 uid = osuAPI.getUser(user).id;
@@ -69,7 +69,7 @@ public class RecentScores extends BaseCommand {
                 throw new Exception();
 
             user = args[0].replace("\"", "");
-            OsuAPI osuAPI = new OsuAPI();
+            OsuAPI osuAPI = OsuAPI.getInstance();
             int uid = 0;
             if (user != null)
                 uid = osuAPI.getUser(user).id;

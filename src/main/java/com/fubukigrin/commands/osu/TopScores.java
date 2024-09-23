@@ -52,7 +52,7 @@ public class TopScores extends BaseCommand {
         String user = event.getOption("user").getAsString().replace("\"", "");
 
         try {
-            OsuAPI osuAPI = new OsuAPI();
+            OsuAPI osuAPI = OsuAPI.getInstance();
             int uid = 0;
             if (user != "")
                 uid = osuAPI.getUser(user).id;
@@ -103,7 +103,7 @@ public class TopScores extends BaseCommand {
                 throw new Exception();
 
             user = args[0].replace("\"", "");
-            OsuAPI osuAPI = new OsuAPI();
+            OsuAPI osuAPI = OsuAPI.getInstance();
             int uid = 0;
             if (user != null)
                 uid = osuAPI.getUser(user).id;

@@ -82,9 +82,22 @@ class APIClient {
 
 public class OsuAPI {
 
+    private static OsuAPI instance;
+
+    public static OsuAPI getInstance() {
+        if (instance == null) {
+            try {
+                instance = new OsuAPI();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return instance;
+    }
+
     private APIClient api;
 
-    public OsuAPI() throws Exception {
+    private OsuAPI() throws Exception {
         api = new APIClient();
         api.getToken();
     }
